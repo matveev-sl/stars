@@ -1,7 +1,5 @@
-<!-- src/App.vue -->
 <template>
   <div id="app">
-
     <StarChar />
   </div>
 </template>
@@ -10,7 +8,6 @@
 
 
 import StarChar from './components/StarWars.vue'
-
 export default {
   name: 'App',
   components: {
@@ -20,5 +17,4 @@ export default {
 </script>
 
 <style>
-/* Стили для App.vue можно добавить здесь */
 </style>
