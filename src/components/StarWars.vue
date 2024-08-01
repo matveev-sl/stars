@@ -1,14 +1,15 @@
 <template>
-  <p>Test</p>
-  <div v-if="isLoading">Загружается...</div>
+ <v-container>
+<div v-if="isLoading">Загружается...</div>
   <div v-else-if="error">{{error}}</div>
   <div v-else>
-    <p><strong>Name:</strong>{{ name }} </p>
-    <p><strong>Height:</strong>{{ height }}</p>
-    <p><strong>Mass:</strong>{{ mass }}</p>
+    <v-chip> <p><strong>Name:</strong>{{ name }} </p></v-chip>
+      <v-chip> <p><strong>Height:</strong>{{ height }}</p></v-chip>
+        <v-chip> <p><strong>Mass:</strong>{{ mass }}</p></v-chip>
   </div>
+</v-container>
 </template>
-
+  
 <script>
 export default {
   name: 'StarChar',
@@ -23,7 +24,7 @@ export default {
   },
   mounted() {
     this.isLoading = true;
-    fetch('https://swapi.dev/api/pe_ople/2/?format=json')
+    fetch('https://swapi.dev/api/people/2/?format=json')
       .then(response => response.json())
       .then(data => {
         this.name = data.name ?? '-- неизвестно --';
@@ -35,12 +36,13 @@ export default {
         this.error = "Серверная ошибка";
       })
       .finally(() => {
-          this.isLoading = false
+          this.isLoading = false;
       });
   }
 };
 </script>
-
+  
   <style scoped>
   /* Добавьте стили, если необходимо */
   </style>
+  
