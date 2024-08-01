@@ -1,8 +1,9 @@
-<!-- src/App.vue -->
+
 <template>
   <div id="app">
 
     <StarChar />
+    <StarCharList />
   </div>
 </template>
 
@@ -10,15 +11,15 @@
 
 
 import StarChar from './components/StarWars.vue'
-
+import StarCharList from './components/StarCharList.vue'
 export default {
   name: 'App',
   components: {
+   
+    StarCharList,
     StarChar
   }
 }
 </script>
 
-<style>
-/* Стили для App.vue можно добавить здесь */
-</style>
+
