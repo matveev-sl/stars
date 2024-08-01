@@ -2,7 +2,7 @@
 <template>
   <div id="app">
 
-    <StarChar />
+<!--    <StarChar />-->
     <StarCharList />
   </div>
 </template>
@@ -15,7 +15,7 @@ import StarCharList from './components/StarCharList.vue'
 export default {
   name: 'App',
   components: {
-   
+
     StarCharList,
     StarChar
   }
