@@ -33,13 +33,13 @@
         isLiked_2: false // todo: тогда надо хранить это в локалстораж
       }
     },
-    methods:{
-      onLike_3(){
-        characters[5].isLiked = true //todo: this is impossible!!!
-      },
-      onLike_2() {
-        this.isLiked = true
-      }
-    }
+    // methods:{
+    //   onLike_3(){
+    //     characters[5].isLiked = true //todo: this is impossible!!!
+    //   },
+    //   onLike_2() {
+    //     this.isLiked = true
+    //   }
+    // }
   }
   </script>

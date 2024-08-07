@@ -3,7 +3,7 @@
     <!-- Проверка, идет ли загрузка данных -->
     <div v-if="isLoading">Загружается...</div>
     <!-- Проверка, есть ли ошибка -->
-    <div v-else-if="error">{{ error }}</div>
+    <div v-if="error">{{ error }}</div>
     <!-- Если нет загрузки и ошибки, отображается список персонажей -->
     <div v-else>
       <v-list>
@@ -13,14 +13,27 @@
 
     </div>
     <!-- Кнопка для перехода на предыдущую страницу -->
-    <v-btn @click="previousPage" :disabled="isPrevButtonDisabled">Previous</v-btn>
+    <v-btn @click="previousPage"  :disabled="isPrevButtonDisabled">Previous</v-btn>
+
+   
     <!-- Кнопка для перехода на следующую страницу -->
-    <v-btn @click="nextPage" :disabled="isNextButtonDisabled">Next</v-btn>
+    <v-btn @click="nextButtonPage"  :disabled="isNextButtonDisabled">Next</v-btn>
+    <v-progress-circular v-if="isLoading" model-value="20" :width="5" indeterminate></v-progress-circular>
+
+    <template v-slot:loader>
+        <span class="custom-loader">
+          <v-progress-circular
+            indeterminate
+            color="white"
+            size="23"
+          ></v-progress-circular>
+        </span>
+      </template>
   </v-container>
 </template>
 
 <script>
-const CHARACTERS_PER_PAGE = 6;
+// const CHARACTERS_PER_PAGE = 6;
 import CharacterCard from './CharacterCard.vue'
 import { characterMap } from "@/mapping.js";
 
@@ -61,7 +74,7 @@ export default {
   methods: {
     // Метод для получения персонажей с определенной страницы
     fetchCharacters(page) {
-      // this.isLoading = true; // Устанавливаем состояние загрузки в true
+      this.isLoading = true; // Устанавливаем состояние загрузки в true
       return fetch(`https://swapi.dev/api/people/?page=${page}&format=json`) // Выполняем запрос к API
       .then(response => response.json()) // Парсим ответ как JSON
       .then(data => {
@@ -74,12 +87,20 @@ export default {
       .finally(() => {
         this.isLoading = false; // Сбрасываем состояние загрузки
       });
+      
     },
-    onLike(id){
-      const char = this.characters.find(id)
-      char.isLiked = true
-      this.characters = ...
+    handleClick() {
+      this.loading = true;
+      // Симулируем асинхронную операцию, например, запрос к серверу
+      setTimeout(() => {
+        this.loading = false;
+      }, 2000);
     },
+    // onLike(id){
+    //   const char = this.characters.find(id)
+    //   char.isLiked = true
+    //   this.characters = "0"
+    // },
     // Метод для перехода на следующую страницу
     async nextPage() {
       if (this.characters.length !== this.currentPage * 10) {
@@ -89,10 +110,14 @@ export default {
         // fixme: даже только в том случае, когда ответ сервера и интерфейс клиента - совпадают
         return
       }
-
       const newCharacters = await this.fetchCharacters(this.currentPage + 1) // Получаем новых персонажей для новой страницы
       this.characters = [...this.characters, ...newCharacters] // Обновляем массив персонажей новыми данными
       this.currentPage++ // Увеличиваем текущую страницу
+    },
+    nextButtonPage () {
+    this.nextPage()
+    this.handleClick ()
+
     },
     // Метод для перехода на предыдущую страницу
     previousPage() {
@@ -106,3 +131,6 @@ export default {
 }
 
 </script>
+<style scoped>
+
+</style>
