@@ -8,7 +8,9 @@
         <v-list-item-subtitle>Height: {{ character.height }}</v-list-item-subtitle>
         <!-- Подзаголовок с массой персонажа VListItemSubtitle -->
         <v-list-item-subtitle>Mass: {{ character.mass }}</v-list-item-subtitle>
-        <button @click="onLike">Like</button>
+        <v-btn @click="onLikeCharacter" >
+          {{ isLiked ? 'Liked' : 'Like' }}
+        </v-btn>
     </v-list-item>
   </template>
 
@@ -24,22 +26,22 @@
         required: true
       },
       onLike: {
-        // type: Function ??
+        type: Function,
         required: true
       }
+      
     },
-    data(){
-      return {
-        isLiked_2: false // todo: тогда надо хранить это в локалстораж
-      }
+    computed: {
+    isLiked() {
+      return this.character.isLiked;
+    }
+  },
+    methods: {
+    // Метод для вызова пропса onLike с передачей name персонажа
+    onLikeCharacter() {
+      this.onLike(this.character.name);
     },
-    // methods:{
-    //   onLike_3(){
-    //     characters[5].isLiked = true //todo: this is impossible!!!
-    //   },
-    //   onLike_2() {
-    //     this.isLiked = true
-    //   }
-    // }
+   
+  }
   }
   </script>

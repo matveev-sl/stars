@@ -8,7 +8,7 @@
     <div v-else>
       <v-list>
         <!-- Проход по каждому персонажу в currentCharacters и отображение его данных через CharacterCard -->
-        <CharacterCard v-for="(char, index) in currentCharacters" :key="index" :character="char" />
+        <CharacterCard v-for="(char, index) in currentCharacters" :key="index" :character="char" :onLike="onLike"/>
       </v-list>
 
     </div>
@@ -19,16 +19,6 @@
     <!-- Кнопка для перехода на следующую страницу -->
     <v-btn @click="nextButtonPage"  :disabled="isNextButtonDisabled">Next</v-btn>
     <v-progress-circular v-if="isLoading" model-value="20" :width="5" indeterminate></v-progress-circular>
-
-    <template v-slot:loader>
-        <span class="custom-loader">
-          <v-progress-circular
-            indeterminate
-            color="white"
-            size="23"
-          ></v-progress-circular>
-        </span>
-      </template>
   </v-container>
 </template>
 
@@ -60,7 +50,6 @@ export default {
     // Вычисляемые данные для текущих персонажей на основе текущей страницы
     currentCharacters() {
       const startIdx = (this.currentPage - 1) * 10 // Начальный индекс для текущей страницы
-      console.log(this.currentPage)
       return this.characters.slice(startIdx, startIdx + 10) // Возвращаем 10 персонажей
     },
     isNextButtonDisabled() {
@@ -96,12 +85,13 @@ export default {
         this.loading = false;
       }, 2000);
     },
-    // onLike(id){
-    //   const char = this.characters.find(id)
-    //   char.isLiked = true
-    //   this.characters = "0"
-    // },
-    // Метод для перехода на следующую страницу
+    onLike(name) {
+  const charIndex = this.characters.findIndex(char => char.name === name);
+  this.characters[charIndex].isLiked = true;
+  this.characters = [...this.characters];
+  console.log('Персонажи:', this.characters);
+    },
+    //Метод для перехода на следующую страницу
     async nextPage() {
       if (this.characters.length !== this.currentPage * 10) {
         // Если количество персонажей не соответствует текущей странице, увеличиваем страницу и выходим из функции
@@ -125,7 +115,7 @@ export default {
         return // Если текущая страница первая, выходим из функции
       }
       this.currentPage-- // Уменьшаем текущую страницу
-      console.log('previousPage', this.currentPage) // Логируем номер предыдущей страницы
+      
     },
   },
 }
