@@ -8,23 +8,23 @@
     <div v-else>
       <v-list>
         <!-- Проход по каждому персонажу в currentCharacters и отображение его данных через CharacterCard -->
-        <CharacterCard v-for="(char, index) in currentCharacters" :key="index" :character="char" :onLike="onLike"/>
+        <CharacterCard v-for="(char, index) in currentCharacters" :key="index" :character="char" @like="onLike"/>
       </v-list>
 
     </div>
     <!-- Кнопка для перехода на предыдущую страницу -->
     <v-btn @click="previousPage"  :disabled="isPrevButtonDisabled">Previous</v-btn>
 
-   
     <!-- Кнопка для перехода на следующую страницу -->
-    <v-btn @click="nextButtonPage"  :disabled="isNextButtonDisabled">Next</v-btn>
+    <v-btn @click="nextPage"  :disabled="isNextButtonDisabled">Next</v-btn>
     <v-progress-circular v-if="isLoading" model-value="20" :width="5" indeterminate></v-progress-circular>
-   
     <v-select
           v-model="charPerPage"
           :items="[5, 10, 15, 20]"
           label="Items per page"
-        ></v-select>
+          class="mt-4"
+          density="compact"
+    ></v-select>
   </v-container>
 </template>
 
@@ -44,7 +44,6 @@ export default {
       currentPage: 1,     // Инициализация текущей страницы как 1
       characters: [],     // Инициализация массива персонажей как пустого,
       charPerPage : 10,
-      mountPages : 8,
       totalCharacters: 0
     }
   },
@@ -54,7 +53,6 @@ export default {
     this.characters = await this.fetchCharacters(1)
     // Вызов метода для отключения кнопки "предыдущая"
   },
-
   computed: {
     // Вычисляемые данные для текущих персонажей на основе текущей страницы
     currentCharacters() {
@@ -62,13 +60,14 @@ export default {
       return this.characters.slice(startIdx, startIdx + this.charPerPage) // Возвращаем 10 персонажей
     },
     isNextButtonDisabled() {
-      this.getMountPages()
       return this.currentPage > this.mountPages
     },
     isPrevButtonDisabled() {
       return this.currentPage <= 1
     },
-  
+    mountPages(){
+      return this.totalCharacters / this.charPerPage
+    }
   },
 
   methods: {
@@ -88,20 +87,13 @@ export default {
       .finally(() => {
         this.isLoading = false; // Сбрасываем состояние загрузки
       });
-      
-    },
-    handleClick() {
-      this.loading = true;
-      // Симулируем асинхронную операцию, например, запрос к серверу
-      setTimeout(() => {
-        this.loading = false;
-      }, 2000);
+
     },
     onLike(name) {
-  const charIndex = this.characters.findIndex(char => char.name === name);
-  this.characters[charIndex].isLiked = true;
-  this.characters = [...this.characters];
-  // console.log('Персонажи:', this.characters);
+      this.characters = this.characters.map(char=> char.name === name
+          ? {...char, isLiked: !char.isLiked}
+          : char
+      )
     },
     //Метод для перехода на следующую страницу
     async nextPage() {
@@ -116,22 +108,13 @@ export default {
       this.characters = [...this.characters, ...newCharacters] // Обновляем массив персонажей новыми данными
       this.currentPage++ // Увеличиваем текущую страницу
     },
-    nextButtonPage () {
-    this.nextPage()
-    this.handleClick ()
-
-    },
     // Метод для перехода на предыдущую страницу
     previousPage() {
       if (this.currentPage === 1) {
         return // Если текущая страница первая, выходим из функции
       }
-      this.currentPage-- // Уменьшаем текущую страницу 
+      this.currentPage-- // Уменьшаем текущую страницу
     },
-    getMountPages() {
-    this.mountPages = this.totalCharacters / this.charPerPage
-    // console.log (this.mountPages)
-    }
   },
 }
 

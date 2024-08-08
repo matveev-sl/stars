@@ -4,6 +4,7 @@ export const characterMap = (apiCharacter) => {
     name: apiCharacter.name ?? '-- неизвестно --',
     height: height,
     mass: isNaN(apiCharacter.mass) ? '-- неизвестно --' : Number(apiCharacter.mass),
-    isLiked: false
+    isLiked: false,
+    id: Number(apiCharacter.url.split('/')[5])
   }
 }

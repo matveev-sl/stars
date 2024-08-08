@@ -9,7 +9,7 @@
         <!-- Подзаголовок с массой персонажа VListItemSubtitle -->
         <v-list-item-subtitle>Mass: {{ character.mass }}</v-list-item-subtitle>
         <v-btn @click="onLikeCharacter" >
-          {{ isLiked ? 'Liked' : 'Like' }}
+          {{ character.isLiked ? 'Liked' : 'Like' }}
         </v-btn>
     </v-list-item>
   </template>
@@ -18,6 +18,8 @@
   export default {
     // Название компонента
     name: 'CharacterCard',
+    // Определение событий (ивентов) которые может создавать (эмиттить) данный компонент
+    emits: ['like'],
     // Определение пропсов, которые принимает компонент
     props: {
       // Проп character, который должен быть объектом и является обязательным
@@ -29,19 +31,12 @@
         type: Function,
         required: true
       }
-      
     },
-    computed: {
-    isLiked() {
-      return this.character.isLiked;
-    }
-  },
     methods: {
     // Метод для вызова пропса onLike с передачей name персонажа
     onLikeCharacter() {
-      this.onLike(this.character.name);
+      this.$emit('like', this.character.name)
     },
-   
   }
   }
   </script>
