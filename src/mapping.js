@@ -4,5 +4,6 @@ export const characterMap = (apiCharacter) => {
     name: apiCharacter.name ?? '-- неизвестно --',
     height: height,
     mass: isNaN(apiCharacter.mass) ? '-- неизвестно --' : Number(apiCharacter.mass),
+    isLiked: false
   }
 }
