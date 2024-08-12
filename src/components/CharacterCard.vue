@@ -8,6 +8,7 @@
         <v-list-item-subtitle>Height: {{ character.height }}</v-list-item-subtitle>
         <!-- Подзаголовок с массой персонажа VListItemSubtitle -->
         <v-list-item-subtitle>Mass: {{ character.mass }}</v-list-item-subtitle>
+        <v-list-item-subtitle>ID: {{ character.id }}</v-list-item-subtitle>
         <v-btn @click="onLikeCharacter" >
           {{ character.isLiked ? 'Liked' : 'Like' }}
         </v-btn>
@@ -35,7 +36,7 @@
     methods: {
     // Метод для вызова пропса onLike с передачей name персонажа
     onLikeCharacter() {
-      this.$emit('like', this.character.name)
+      this.$emit('like', this.character.id)
     },
   }
   }

@@ -89,8 +89,8 @@ export default {
       });
 
     },
-    onLike(name) {
-      this.characters = this.characters.map(char=> char.name === name
+    onLike(id) {
+      this.characters = this.characters.map(char=> char.id === id
           ? {...char, isLiked: !char.isLiked}
           : char
       )

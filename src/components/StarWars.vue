@@ -19,7 +19,8 @@ export default {
       error: '',
       name: '',
       height: '',
-      mass: ''
+      mass: '',
+      id: ''
     };
   },
   mounted() {
