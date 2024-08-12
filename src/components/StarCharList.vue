@@ -7,6 +7,7 @@
     <!-- Если нет загрузки и ошибки, отображается список персонажей -->
     <div v-else>
       <v-list>
+        <div v-if="isUnCount">Ошибка подсчета персонажей</div>
         <!-- Проход по каждому персонажу в currentCharacters и отображение его данных через CharacterCard -->
         <CharacterCard v-for="(char, index) in currentCharacters" :key="index" :character="char" @like="onLike"/>
       </v-list>
@@ -44,7 +45,8 @@ export default {
       currentPage: 1,     // Инициализация текущей страницы как 1
       characters: [],     // Инициализация массива персонажей как пустого,
       charPerPage : 10,
-      totalCharacters: 0
+      totalCharacters: 0,
+      isUnCount : false
     }
   },
 
@@ -66,7 +68,7 @@ export default {
       return this.currentPage <= 1
     },
     mountPages(){
-      return this.totalCharacters / this.charPerPage
+      return this.totalCharacters / this.charPerPage 
     }
   },
 
@@ -78,6 +80,7 @@ export default {
       .then(response => response.json()) // Парсим ответ как JSON
       .then(data => {
         this.totalCharacters = data.count;
+        console.log (this.totalCharacters)
         return data.results.map(characterMap) // Возвращаем результаты запроса
       })
       .catch((e) => {
@@ -87,6 +90,12 @@ export default {
       .finally(() => {
         this.isLoading = false; // Сбрасываем состояние загрузки
       });
+
+    },
+    totalCharactersError () {
+      if (this.totalCharacters === undefined) {
+        this.isUnCount = true;
+      }
 
     },
     onLike(id) {
