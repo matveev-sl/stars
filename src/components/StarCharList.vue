@@ -54,6 +54,7 @@ export default {
     // Загружаем персонажей для первой страницы при монтировании компонента
     this.characters = await this.fetchCharacters(1)
     // Вызов метода для отключения кнопки "предыдущая"
+    this.totalCharactersError();
   },
   computed: {
     // Вычисляемые данные для текущих персонажей на основе текущей страницы
@@ -69,7 +70,8 @@ export default {
     },
     mountPages(){
       return this.totalCharacters / this.charPerPage 
-    }
+    },
+    
   },
 
   methods: {
@@ -80,7 +82,7 @@ export default {
       .then(response => response.json()) // Парсим ответ как JSON
       .then(data => {
         this.totalCharacters = data.count;
-        console.log (this.totalCharacters)
+       
         return data.results.map(characterMap) // Возвращаем результаты запроса
       })
       .catch((e) => {
@@ -92,17 +94,18 @@ export default {
       });
 
     },
-    totalCharactersError () {
-      if (this.totalCharacters === undefined) {
-        this.isUnCount = true;
-      }
-
-    },
+   
     onLike(id) {
       this.characters = this.characters.map(char=> char.id === id
           ? {...char, isLiked: !char.isLiked}
           : char
       )
+    },
+    totalCharactersError () {
+      if (this.totalCharacters === undefined ) {
+        this.isUnCount = true;
+      }
+
     },
     //Метод для перехода на следующую страницу
     async nextPage() {

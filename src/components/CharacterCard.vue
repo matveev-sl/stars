@@ -2,13 +2,14 @@
     <!-- Компонент списка VListItem от Vuetify -->
     <v-list-item>
       <!-- Содержимое элемента списка VListItemContent -->
+      <v-list-item-subtitle>ID: {{ character.id }}</v-list-item-subtitle>
         <!-- Заголовок элемента списка VListItemTitle -->
         <v-list-item-title>{{ character.name }}</v-list-item-title>
         <!-- Подзаголовок с ростом персонажа VListItemSubtitle -->
         <v-list-item-subtitle>Height: {{ character.height }}</v-list-item-subtitle>
         <!-- Подзаголовок с массой персонажа VListItemSubtitle -->
         <v-list-item-subtitle>Mass: {{ character.mass }}</v-list-item-subtitle>
-       
+        <v-list-item-subtitle>Age: {{ character.age }}</v-list-item-subtitle>
         <v-btn @click="onLikeCharacter" >
           {{ character.isLiked ? 'Liked' : 'Like' }}
         </v-btn>
