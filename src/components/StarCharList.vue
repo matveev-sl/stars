@@ -25,6 +25,7 @@
           label="Items per page"
           class="mt-4"
           density="compact"
+          @change="characterChange"
     ></v-select>
     <v-pagination
               v-model="currentPage"
@@ -81,25 +82,38 @@ export default {
 
   methods: {
     // Метод для получения персонажей с определенной страницы
-    fetchCharacters(page) {
-      this.isLoading = true; // Устанавливаем состояние загрузки в true
-      return fetch(`https://swapi.dev/api/people/?page=${page}&format=json`) // Выполняем запрос к API
-      .then(response => response.json()) // Парсим ответ как JSON
-      .then(data => {
-        this.totalCharacters = data.count;
-       
-        return data.results.map(characterMap) // Возвращаем результаты запроса
-      })
-      .catch((e) => {
-        console.error("Произошла ошибка", e); // Логируем ошибку в консоль
-        this.error = "Серверная ошибка"; // Устанавливаем сообщение об ошибке
-      })
-      .finally(() => {
-        this.isLoading = false; // Сбрасываем состояние загрузки
-      });
+    fetchCharacters(page, characterPerPage) {
+    this.isLoading = true; // Устанавливаем состояние загрузки в true
 
-    },
-   
+    // Основной запрос к текущей странице
+    const fetchPage = fetch(`https://swapi.dev/api/people/?page=${page}&format=json`).then(response => response.json());
+
+    // Если characterPerPage больше 10, делаем запрос и к следующей странице
+    const fetchNextPage = characterPerPage > 10
+        ? fetch(`https://swapi.dev/api/people/?page=${page + 1}&format=json`).then(response => response.json())
+        : Promise.resolve(null);
+
+    return Promise.all([fetchPage, fetchNextPage])
+        .then(([data, nextData]) => {
+           
+          this.totalCharacters = data.count; // Обновляем общее количество персонажей
+            // Объединяем результаты, если был запрос к следующей странице
+            const results = nextData ? data.results.concat(nextData.results) : data.results;
+            
+            return results.map(characterMap); // Преобразуем данные
+        })
+        .catch((e) => {
+            console.error("Произошла ошибка", e); // Логируем ошибку в консоль
+            this.error = "Серверная ошибка"; // Устанавливаем сообщение об ошибке
+        })
+        .finally(() => {
+            this.isLoading = false; // Сбрасываем состояние загрузки
+        });
+},
+
+    characterChange() {
+    
+  },
     onLike(id) {
       this.characters = this.characters.map(char=> char.id === id
           ? {...char, isLiked: !char.isLiked}
