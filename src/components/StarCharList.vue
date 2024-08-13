@@ -26,6 +26,11 @@
           class="mt-4"
           density="compact"
     ></v-select>
+    <v-pagination
+              v-model="currentPage"
+              :length="mountPages"
+              class="my-4"
+            ></v-pagination>
   </v-container>
 </template>
 
@@ -69,7 +74,7 @@ export default {
       return this.currentPage <= 1
     },
     mountPages(){
-      return this.totalCharacters / this.charPerPage 
+      return Math.ceil(this.totalCharacters / this.charPerPage);
     },
     
   },
