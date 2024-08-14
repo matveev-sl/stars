@@ -1,37 +1,29 @@
 <template>
   <v-container>
     <!-- Проверка, идет ли загрузка данных -->
-    <div v-if="isLoading">Загружается...</div>
-    <!-- Проверка, есть ли ошибка -->
     <div v-if="error">{{ error }}</div>
     <!-- Если нет загрузки и ошибки, отображается список персонажей -->
+    <div v-else-if="isLoading">Загружается...</div>
+    <!-- Проверка, есть ли ошибка -->
     <div v-else>
       <v-list>
-        <div v-if="isUnCount">Ошибка подсчета персонажей</div>
         <!-- Проход по каждому персонажу в currentCharacters и отображение его данных через CharacterCard -->
         <CharacterCard v-for="(char, index) in currentCharacters" :key="index" :character="char" @like="onLike"/>
       </v-list>
-
     </div>
-    <!-- Кнопка для перехода на предыдущую страницу -->
-    <v-btn @click="previousPage"  :disabled="isPrevButtonDisabled">Previous</v-btn>
-
-    <!-- Кнопка для перехода на следующую страницу -->
-    <v-btn @click="nextPage"  :disabled="isNextButtonDisabled">Next</v-btn>
-    <v-progress-circular v-if="isLoading" model-value="20" :width="5" indeterminate></v-progress-circular>
     <v-select
-          v-model="charPerPage"
-          :items="[5, 10, 15, 20]"
+          v-model="charsPerPage"
+          :items="[4, 6, 10, 14, 18, 22]"
           label="Items per page"
           class="mt-4"
           density="compact"
-          @change="characterChange"
+          v-on:update:modelValue="onCharsPerPageChange"
     ></v-select>
     <v-pagination
-              v-model="currentPage"
-              :length="mountPages"
-              class="my-4"
-            ></v-pagination>
+          v-model="currentPage"
+          :length="mountPages"
+          class="my-4"
+    ></v-pagination>
   </v-container>
 </template>
 
@@ -39,6 +31,9 @@
 
 import CharacterCard from './CharacterCard.vue'
 import { characterMap } from "@/mapping.js";
+const TOTAL_CHARS_FALLBACK_VALUE = 100;
+const API_FIRST_PAGE = 1; // api url for first page is /1/
+const API_CHARS_PER_PAGE = 10;  // api always return 10 characters
 
 export default {
   components: {
@@ -48,103 +43,77 @@ export default {
     return {
       isLoading: false,   // Инициализация состояния загрузки как false
       error: '',          // Инициализация сообщения об ошибке как пустая строка
-      currentPage: 1,     // Инициализация текущей страницы как 1
+      currentPage: API_FIRST_PAGE,     // Инициализация текущей страницы как 1
       characters: [],     // Инициализация массива персонажей как пустого,
-      charPerPage : 10,
-      totalCharacters: 0,
-      isUnCount : false
+      charsPerPage : API_CHARS_PER_PAGE,
+      totalCharacters: TOTAL_CHARS_FALLBACK_VALUE,
     }
   },
 
   async mounted() {
     // Загружаем персонажей для первой страницы при монтировании компонента
-    this.characters = await this.fetchCharacters(1)
-    // Вызов метода для отключения кнопки "предыдущая"
-    this.totalCharactersError();
+    this.isLoading = true
+    const { characters, totalCharacters } = await this.fetchCharacters(API_FIRST_PAGE)
+    this.characters = characters
+    this.totalCharacters = totalCharacters
+    this.isLoading = false
   },
   computed: {
     // Вычисляемые данные для текущих персонажей на основе текущей страницы
     currentCharacters() {
-      const startIdx = (this.currentPage - 1) * this.charPerPage // Начальный индекс для текущей страницы
-      return this.characters.slice(startIdx, startIdx + this.charPerPage) // Возвращаем 10 персонажей
-    },
-    isNextButtonDisabled() {
-      return this.currentPage > this.mountPages
-    },
-    isPrevButtonDisabled() {
-      return this.currentPage <= 1
+      const startIdx = (this.currentPage - 1) * this.charsPerPage // Начальный индекс для текущей страницы
+      return this.characters.slice(startIdx, startIdx + this.charsPerPage) // Возвращаем 10 персонажей
     },
     mountPages(){
-      return Math.ceil(this.totalCharacters / this.charPerPage);
+      return Math.ceil(this.totalCharacters / this.charsPerPage);
     },
-    
   },
-
+  watch: {
+    currentPage(newVal) {
+      this.checkCharactersPerPageLimit(newVal, this.charsPerPage)
+    },
+    charsPerPage(newVal) {
+      this.checkCharactersPerPageLimit(this.currentPage, newVal)
+    }
+  },
   methods: {
     // Метод для получения персонажей с определенной страницы
-    fetchCharacters(page, characterPerPage) {
-    this.isLoading = true; // Устанавливаем состояние загрузки в true
-
-    // Основной запрос к текущей странице
-    const fetchPage = fetch(`https://swapi.dev/api/people/?page=${page}&format=json`).then(response => response.json());
-
-    // Если characterPerPage больше 10, делаем запрос и к следующей странице
-    const fetchNextPage = characterPerPage > 10
-        ? fetch(`https://swapi.dev/api/people/?page=${page + 1}&format=json`).then(response => response.json())
-        : Promise.resolve(null);
-
-    return Promise.all([fetchPage, fetchNextPage])
-        .then(([data, nextData]) => {
-           
-          this.totalCharacters = data.count; // Обновляем общее количество персонажей
-            // Объединяем результаты, если был запрос к следующей странице
-            const results = nextData ? data.results.concat(nextData.results) : data.results;
-            
-            return results.map(characterMap); // Преобразуем данные
+    async fetchCharacters(page) {
+      return fetch(`https://swapi.dev/api/people/?page=${page}&format=json`) // Выполняем запрос к API
+        .then(response => response.json()) // Парсим ответ как JSON
+        .then(data => {
+          return {
+            totalCharacters: data.count ?? TOTAL_CHARS_FALLBACK_VALUE,
+            characters: data.results.map(characterMap)
+          };
         })
         .catch((e) => {
-            console.error("Произошла ошибка", e); // Логируем ошибку в консоль
-            this.error = "Серверная ошибка"; // Устанавливаем сообщение об ошибке
+          console.error("Произошла ошибка", e); // Логируем ошибку в консоль
+          this.error = "Серверная ошибка"; // Устанавливаем сообщение об ошибке
         })
-        .finally(() => {
-            this.isLoading = false; // Сбрасываем состояние загрузки
-        });
-},
-
-    characterChange() {
-    
-  },
+    },
+    async checkCharactersPerPageLimit(page, limit) {
+      if (this.currentCharacters.length >= limit * page) {
+        return
+      }
+      this.isLoading = true
+      const startPage = this.characters.length / API_CHARS_PER_PAGE + API_FIRST_PAGE
+      const finalPage = Math.ceil(page * limit / API_CHARS_PER_PAGE)
+      for (let page = startPage; page <= finalPage; page++) {
+        const { characters, totalCharacters } = await this.fetchCharacters(page)
+        this.characters = [...this.characters, ...characters]
+        this.totalCharacters = totalCharacters
+      }
+      this.isLoading = false
+    },
+    onCharsPerPageChange() {
+      this.currentPage = API_FIRST_PAGE
+    },
     onLike(id) {
       this.characters = this.characters.map(char=> char.id === id
           ? {...char, isLiked: !char.isLiked}
           : char
       )
-    },
-    totalCharactersError () {
-      if (this.totalCharacters === undefined ) {
-        this.isUnCount = true;
-      }
-
-    },
-    //Метод для перехода на следующую страницу
-    async nextPage() {
-      if (this.characters.length !== this.currentPage * this.charPerPage) {
-        // Если количество персонажей не соответствует текущей странице, увеличиваем страницу и выходим из функции
-        this.currentPage++
-        // fixme: этот код не достаточно "общий", он работает только с 10 персонажами на странице.
-        // fixme: даже только в том случае, когда ответ сервера и интерфейс клиента - совпадают
-        return
-      }
-      const newCharacters = await this.fetchCharacters(this.currentPage + 1) // Получаем новых персонажей для новой страницы
-      this.characters = [...this.characters, ...newCharacters] // Обновляем массив персонажей новыми данными
-      this.currentPage++ // Увеличиваем текущую страницу
-    },
-    // Метод для перехода на предыдущую страницу
-    previousPage() {
-      if (this.currentPage === 1) {
-        return // Если текущая страница первая, выходим из функции
-      }
-      this.currentPage-- // Уменьшаем текущую страницу
     },
   },
 }
