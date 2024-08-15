@@ -11,6 +11,12 @@
         <CharacterCard v-for="(char, index) in currentCharacters" :key="index" :character="char" @like="onLike"/>
       </v-list>
     </div>
+    <v-text-field
+  v-model="searchQuery"
+  label="Search"
+  class="mt-4"
+ 
+></v-text-field>
     <v-select
           v-model="charsPerPage"
           :items="[4, 6, 10, 14, 18, 22]"
@@ -47,9 +53,11 @@ export default {
       characters: [],     // Инициализация массива персонажей как пустого,
       charsPerPage : API_CHARS_PER_PAGE,
       totalCharacters: TOTAL_CHARS_FALLBACK_VALUE,
+      searchQuery: '',
+      searchResult: []
     }
   },
-
+  
   async mounted() {
     // Загружаем персонажей для первой страницы при монтировании компонента
     this.isLoading = true
@@ -115,6 +123,24 @@ export default {
           : char
       )
     },
+    async onSearch(searchQuery) {
+      console.log(searchQuery)
+       try {
+    const response = await fetch(`https://swapi.dev/api/people/?format=json&search=${searchQuery}`);
+    const data = await response.json();
+    console.log('API data:', data); // Логируем данные от API
+    if (data.results) {
+      this.searchResult = data.results.map(characterMap);
+      console.log('searchResult:', this.searchResult); // Логируем результат после маппинга
+    } else {
+      console.log('No results found');
+      this.searchResult = [];
+    }
+  } catch (e) {
+    console.error("Произошла ошибка", e); // Логируем ошибку в консоль
+    this.error = "Серверная ошибка"; // Устанавливаем сообщение об ошибке
+  }
+}
   },
 }
 
