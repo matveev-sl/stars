@@ -12,10 +12,13 @@
   class="mt-4"
   @input="onSearch"
 ></v-text-field>
-      <v-list>
-        <!-- Проход по каждому персонажу в currentCharacters и отображение его данных через CharacterCard -->
-        <CharacterCard v-for="(char, index) in currentCharacters" :key="index" :character="char" @like="onLike"/>
-      </v-list>
+<v-list-item
+          v-for="(char, index) in currentCharacters"
+          :key="index"
+          :to="{ name: 'CharacterDetail', params: { id: char.id } }"
+        >
+          <CharacterCard :character="char" @like="onLike" />
+        </v-list-item>
     </div>
    
     <v-select
