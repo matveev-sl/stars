@@ -18,7 +18,6 @@ const routes = [
     path: '/character/:id', // Динамический маршрут для детальной страницы персонажа
     name: 'CharacterDetail',
     component: CharacterDetail,
-    props: true
   }
 ];
 

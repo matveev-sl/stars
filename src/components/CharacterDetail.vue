@@ -21,7 +21,10 @@
       };
     },
     async created() {
+      // todo: loading indicator
       const characterId = this.$route.params.id; // Получаем ID персонажа из параметров маршрута
+      console.log(this.$route.params)
+
       await this.fetchCharacter(characterId);
     },
     methods: {
@@ -29,8 +32,10 @@
         try {
           const response = await fetch(`https://swapi.dev/api/people/${id}/`);
           const data = await response.json();
+          // todo: mapping
           this.character = data;
         } catch (e) {
+          // todo: error handling
           console.error("Произошла ошибка", e);
         }
       }
