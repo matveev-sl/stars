@@ -2,7 +2,6 @@
     <v-container>
       <v-card>
         <v-card-title>{{ character.name }}</v-card-title>
-        <v-card-subtitle>ID: {{ character.id }}</v-card-subtitle>
         <v-card-text>
           <p>Height: {{ character.height }}</p>
           <p>Mass: {{ character.mass }}</p>
