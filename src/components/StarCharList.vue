@@ -6,17 +6,18 @@
     <div v-else-if="isLoading">Загружается...</div>
     <!-- Проверка, есть ли ошибка -->
     <div v-else>
+      <v-text-field
+  v-model="searchQuery"
+  label="Search"
+  class="mt-4"
+  @input="onSearch"
+></v-text-field>
       <v-list>
         <!-- Проход по каждому персонажу в currentCharacters и отображение его данных через CharacterCard -->
         <CharacterCard v-for="(char, index) in currentCharacters" :key="index" :character="char" @like="onLike"/>
       </v-list>
     </div>
-    <v-text-field
-  v-model="searchQuery"
-  label="Search"
-  class="mt-4"
- 
-></v-text-field>
+   
     <v-select
           v-model="charsPerPage"
           :items="[4, 6, 10, 14, 18, 22]"
@@ -42,7 +43,8 @@ const API_FIRST_PAGE = 1; // api url for first page is /1/
 const API_CHARS_PER_PAGE = 10;  // api always return 10 characters
 
 export default {
-  components: {
+name: 'StarCharList',
+components: {
     CharacterCard
   },
   data() {
@@ -123,19 +125,15 @@ export default {
           : char
       )
     },
-    async onSearch(searchQuery) {
-      console.log(searchQuery)
+    async onSearch() {
        try {
-    const response = await fetch(`https://swapi.dev/api/people/?format=json&search=${searchQuery}`);
+    const response = await fetch(`https://swapi.dev/api/people/?format=json&search=${this.searchQuery}`);
     const data = await response.json();
     console.log('API data:', data); // Логируем данные от API
     if (data.results) {
-      this.searchResult = data.results.map(characterMap);
-      console.log('searchResult:', this.searchResult); // Логируем результат после маппинга
-    } else {
-      console.log('No results found');
-      this.searchResult = [];
-    }
+      this.characters = data.results.map(characterMap);
+      console.log('searchResult:', this.characters); // Логируем результат после маппинга
+    } 
   } catch (e) {
     console.error("Произошла ошибка", e); // Логируем ошибку в консоль
     this.error = "Серверная ошибка"; // Устанавливаем сообщение об ошибке
