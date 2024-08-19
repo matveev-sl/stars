@@ -4,6 +4,7 @@
         v-model="searchQuery"
         label="Search"
         class="mt-4"
+        @input="debouncedSearch"
     ></v-text-field>
     <!-- Проверка, идет ли загрузка данных -->
     <div v-if="error">{{ error }}</div>
@@ -25,7 +26,7 @@
           label="Items per page"
           class="mt-4"
           density="compact"
-          v-on:update:modelValue="onCharsPerPageChange"
+          @update:model-value="onCharsPerPageChange"
     ></v-select>
     <!-- todo: install eslint, prettier   -->
     <v-pagination
@@ -40,6 +41,8 @@
 
 import CharacterCard from './CharacterCard.vue'
 import { characterMap } from "@/mapping.js";
+import { debounce } from 'lodash';
+
 const TOTAL_CHARS_FALLBACK_VALUE = 100;
 const API_FIRST_PAGE = 1; // api url for first page is /1/
 const API_CHARS_PER_PAGE = 10;  // api always return 10 characters
@@ -59,21 +62,6 @@ components: {
       totalCharacters: TOTAL_CHARS_FALLBACK_VALUE,
       searchQuery: '',
       searchResult: []
-    }
-  },
-  
-  async mounted() {
-    // Загружаем персонажей для первой страницы при монтировании компонента
-    this.isLoading = true
-    const { characters, totalCharacters } = await this.fetchCharacters(API_FIRST_PAGE, this.searchQuery)
-    this.characters = characters
-    this.totalCharacters = totalCharacters
-    this.isLoading = false
-  },
-  async created() {
-    const searchQuery = this.$route.query.search; // Получаем ID персонажа из параметров маршрута
-    if (searchQuery) {
-      this.searchQuery = searchQuery
     }
   },
   computed: {
@@ -96,6 +84,23 @@ components: {
     searchQuery(newValue) {
       this.onSearch(newValue)
     }
+  },
+  
+  async mounted() {
+    // Загружаем персонажей для первой страницы при монтировании компонента
+    this.isLoading = true
+    const { characters, totalCharacters } = await this.fetchCharacters(API_FIRST_PAGE, this.searchQuery)
+    this.characters = characters
+    this.totalCharacters = totalCharacters
+    this.isLoading = false
+  },
+  async created() {
+    this.debouncedSearch = debounce(this.onSearch, 3000); // Создаем функцию с дебаунсом
+    const searchQuery = this.$route.query.search; // Получаем ID персонажа из параметров маршрута
+    if (searchQuery) {
+      this.searchQuery = searchQuery
+    }
+    
   },
   methods: {
     // Метод для получения персонажей с определенной страницы
