@@ -4,13 +4,13 @@
       <p>Всем привет</p>
     </div>
   </template>
-  
-  <script>
-  export default {
-    name: 'AboutPage'
-  }
-  </script>
-  
-  <style scoped>
-  /* Ваши стили здесь */
-  </style>
+
+<script>
+export default {
+  name: 'AboutPage'
+};
+</script>
+
+<style scoped>
+/* Ваши стили здесь */
+</style>

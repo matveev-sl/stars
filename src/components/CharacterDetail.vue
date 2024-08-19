@@ -11,34 +11,33 @@
       </v-card>
     </v-container>
   </template>
-  
-  <script>
-  export default {
-    name: 'CharacterDetail',
-    data() {
-      return {
-        character: {}
-      };
-    },
-    async created() {
-      const characterId = this.$route.params.id; // Получаем ID персонажа из параметров маршрута
-      await this.fetchCharacter(characterId);
-    },
-    methods: {
-      async fetchCharacter(id) {
-        try {
-          const response = await fetch(`https://swapi.dev/api/people/${id}/`);
-          const data = await response.json();
-          this.character = data;
-        } catch (e) {
-          console.error("Произошла ошибка", e);
-        }
+
+<script>
+export default {
+  name: 'CharacterDetail',
+  data() {
+    return {
+      character: {}
+    };
+  },
+  async created() {
+    const characterId = this.$route.params.id; // Получаем ID персонажа из параметров маршрута
+    await this.fetchCharacter(characterId);
+  },
+  methods: {
+    async fetchCharacter(id) {
+      try {
+        const response = await fetch(`https://swapi.dev/api/people/${id}/`);
+        const data = await response.json();
+        this.character = data;
+      } catch (e) {
+        console.error('Произошла ошибка', e);
       }
     }
-  };
-  </script>
-  
+  }
+};
+</script>
+
   <style scoped>
   /* Ваши стили здесь */
   </style>
-  

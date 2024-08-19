@@ -39,75 +39,75 @@
 
 <script>
 
-import CharacterCard from './CharacterCard.vue'
-import { characterMap } from "@/mapping.js";
+import CharacterCard from './CharacterCard.vue';
+import { characterMap } from '@/mapping.js';
 import { debounce } from 'lodash';
 
 const TOTAL_CHARS_FALLBACK_VALUE = 100;
 const API_FIRST_PAGE = 1; // api url for first page is /1/
-const API_CHARS_PER_PAGE = 10;  // api always return 10 characters
+const API_CHARS_PER_PAGE = 10; // api always return 10 characters
 
 export default {
-name: 'StarCharList',
-components: {
+  name: 'StarCharList',
+  components: {
     CharacterCard
   },
   data() {
     return {
-      isLoading: false,   // Инициализация состояния загрузки как false
-      error: '',          // Инициализация сообщения об ошибке как пустая строка
-      currentPage: API_FIRST_PAGE,     // Инициализация текущей страницы как 1
-      characters: [],     // Инициализация массива персонажей как пустого,
-      charsPerPage : API_CHARS_PER_PAGE,
+      isLoading: false, // Инициализация состояния загрузки как false
+      error: '', // Инициализация сообщения об ошибке как пустая строка
+      currentPage: API_FIRST_PAGE, // Инициализация текущей страницы как 1
+      characters: [], // Инициализация массива персонажей как пустого,
+      charsPerPage: API_CHARS_PER_PAGE,
       totalCharacters: TOTAL_CHARS_FALLBACK_VALUE,
       searchQuery: '',
       searchResult: []
-    }
+    };
   },
   computed: {
     // Вычисляемые данные для текущих персонажей на основе текущей страницы
     currentCharacters() {
-      const startIdx = (this.currentPage - 1) * this.charsPerPage // Начальный индекс для текущей страницы
-      return this.characters.slice(startIdx, startIdx + this.charsPerPage) // Возвращаем 10 персонажей
+      const startIdx = (this.currentPage - 1) * this.charsPerPage; // Начальный индекс для текущей страницы
+      return this.characters.slice(startIdx, startIdx + this.charsPerPage); // Возвращаем 10 персонажей
     },
-    mountPages(){
+    mountPages() {
       return Math.ceil(this.totalCharacters / this.charsPerPage);
-    },
+    }
   },
   watch: {
     currentPage(newVal) {
-      this.checkCharactersPerPageLimit(newVal, this.charsPerPage)
+      this.checkCharactersPerPageLimit(newVal, this.charsPerPage);
     },
     charsPerPage(newVal) {
-      this.checkCharactersPerPageLimit(this.currentPage, newVal)
+      this.checkCharactersPerPageLimit(this.currentPage, newVal);
     },
     searchQuery(newValue) {
-      this.onSearch(newValue)
+      this.onSearch(newValue);
     }
   },
-  
+
   async mounted() {
     // Загружаем персонажей для первой страницы при монтировании компонента
-    this.isLoading = true
-    const { characters, totalCharacters } = await this.fetchCharacters(API_FIRST_PAGE, this.searchQuery)
-    this.characters = characters
-    this.totalCharacters = totalCharacters
-    this.isLoading = false
+    this.isLoading = true;
+    const { characters, totalCharacters } = await this.fetchCharacters(API_FIRST_PAGE, this.searchQuery);
+    this.characters = characters;
+    this.totalCharacters = totalCharacters;
+    this.isLoading = false;
   },
   async created() {
     this.debouncedSearch = debounce(this.onSearch, 3000); // Создаем функцию с дебаунсом
     const searchQuery = this.$route.query.search; // Получаем ID персонажа из параметров маршрута
     if (searchQuery) {
-      this.searchQuery = searchQuery
+      this.searchQuery = searchQuery;
     }
-    
+
   },
   methods: {
     // Метод для получения персонажей с определенной страницы
     async fetchCharacters(page, search = '') {
-      let url = `https://swapi.dev/api/people/?page=${page}&format=json`
+      let url = `https://swapi.dev/api/people/?page=${page}&format=json`;
       if (search.length > 0) {
-        url += `&search=${search}`
+        url += `&search=${search}`;
       }
       return fetch(url) // Выполняем запрос к API
         .then(response => response.json()) // Парсим ответ как JSON
@@ -118,46 +118,46 @@ components: {
           };
         })
         .catch((e) => {
-          console.error("Произошла ошибка", e); // Логируем ошибку в консоль
-          this.error = "Серверная ошибка"; // Устанавливаем сообщение об ошибке
-        })
+          console.error('Произошла ошибка', e); // Логируем ошибку в консоль
+          this.error = 'Серверная ошибка'; // Устанавливаем сообщение об ошибке
+        });
     },
     async checkCharactersPerPageLimit(page, limit) {
-      console.log("checkCharactersPerPageLimit", page, limit);
+      console.log('checkCharactersPerPageLimit', page, limit);
       if (this.currentCharacters.length >= limit * page) {
-        return
+        return;
       }
-      this.isLoading = true
-      const startPage = this.characters.length / API_CHARS_PER_PAGE + API_FIRST_PAGE
-      const finalPage = Math.ceil(page * limit / API_CHARS_PER_PAGE)
+      this.isLoading = true;
+      const startPage = this.characters.length / API_CHARS_PER_PAGE + API_FIRST_PAGE;
+      const finalPage = Math.ceil(page * limit / API_CHARS_PER_PAGE);
       for (let page = startPage; page <= finalPage; page++) {
         // todo: improve - make calls in parallel
-        const { characters, totalCharacters } = await this.fetchCharacters(page, this.searchQuery)
-        this.characters = [...this.characters, ...characters]
-        this.totalCharacters = totalCharacters
+        const { characters, totalCharacters } = await this.fetchCharacters(page, this.searchQuery);
+        this.characters = [ ...this.characters, ...characters ];
+        this.totalCharacters = totalCharacters;
       }
-      this.isLoading = false
+      this.isLoading = false;
     },
     onCharsPerPageChange() {
-      this.currentPage = API_FIRST_PAGE
+      this.currentPage = API_FIRST_PAGE;
     },
     onLike(id) {
-      this.characters = this.characters.map(char=> char.id === id
-          ? {...char, isLiked: !char.isLiked}
-          : char
-      )
+      this.characters = this.characters.map(char => char.id === id
+        ? { ...char, isLiked: !char.isLiked }
+        : char
+      );
     },
     async onSearch(searchQuery) {
-      this.$router.push({ name: 'Home', replace:true, query: { search: searchQuery } })
-      this.currentPage = API_FIRST_PAGE
-      this.isLoading = true
-      const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, searchQuery)
-      this.characters = characters
-      this.totalCharacters = totalCharacters
-      this.isLoading = false
+      this.$router.push({ name: 'Home', replace: true, query: { search: searchQuery } });
+      this.currentPage = API_FIRST_PAGE;
+      this.isLoading = true;
+      const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, searchQuery);
+      this.characters = characters;
+      this.totalCharacters = totalCharacters;
+      this.isLoading = false;
     }
-  },
-}
+  }
+};
 
 </script>
 <style scoped>

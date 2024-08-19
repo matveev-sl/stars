@@ -9,13 +9,13 @@
       </v-row>
     </v-container>
   </template>
-  
-  <script>
-  export default {
-    name: 'NotFound',
-  };
-  </script>
-  
+
+<script>
+export default {
+  name: 'NotFound'
+};
+</script>
+
   <style scoped>
   h1 {
     font-size: 3em;
@@ -26,4 +26,3 @@
     margin-bottom: 2em;
   }
   </style>
-  

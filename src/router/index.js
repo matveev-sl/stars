@@ -13,24 +13,23 @@ const routes = [
   {
     path: '/about',
     name: 'AboutPage',
-    component: AboutPage,
+    component: AboutPage
   },
   {
     path: '/:catchAll(.*)',
     name: 'NotFound',
-    component: NotFound,
+    component: NotFound
   },
   {
     path: '/character/:id', // Динамический маршрут для детальной страницы персонажа
     name: 'CharacterDetail',
-    component: CharacterDetail,
+    component: CharacterDetail
   }
 ];
 
 const router = createRouter({
-    history: createWebHistory('/'), // Используйте '/' напрямую
-    routes
-  });
-  
+  history: createWebHistory('/'), // Используйте '/' напрямую
+  routes
+});
 
-export default router
+export default router;

@@ -1,24 +1,26 @@
-const UNKNOWN_VALUE = '-- неизвестно --'
+const UNKNOWN_VALUE = '-- неизвестно --';
 
 export const characterMap = (apiCharacter) => {
   const height = isNaN(apiCharacter.height) ? UNKNOWN_VALUE : apiCharacter.height;
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getFullYear();
   return {
     name: apiCharacter.name ?? UNKNOWN_VALUE,
     height: height,
     mass: isNaN(apiCharacter.mass) ? UNKNOWN_VALUE : Number(apiCharacter.mass),
     isLiked: false,
     id: parseId(apiCharacter.url),
-    age: isNaN(parseInt(apiCharacter.birth_year) + currentYear) ? UNKNOWN_VALUE : parseInt(apiCharacter.birth_year) + currentYear
-  }
-}
+    age: isNaN(parseInt(apiCharacter.birth_year) + currentYear)
+      ? UNKNOWN_VALUE
+      : parseInt(apiCharacter.birth_year) + currentYear
+  };
+};
 
 const parseId = (url) => {
   // expected url: 'https://swapi.dev/api/people/2/'
-  const idRegex = /.*people\/(\d+)/
-  const match = url.match(idRegex)
+  const idRegex = /.*people\/(\d+)/;
+  const match = url.match(idRegex);
   if (match && match.length === 2) {
-    return match[1]
+    return match[1];
   }
-  throw new Error('Id was not parsed')
-}
+  throw new Error('Id was not parsed');
+};
