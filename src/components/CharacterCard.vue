@@ -16,29 +16,29 @@
     </v-list-item>
   </template>
 
-  <script>
-  export default {
-    // Название компонента
-    name: 'CharacterCard',
-    // Определение событий (ивентов) которые может создавать (эмиттить) данный компонент
-    emits: ['like'],
-    // Определение пропсов, которые принимает компонент
-    props: {
-      // Проп character, который должен быть объектом и является обязательным
-      character: {
-        type: Object,
-        required: true
-      },
-      onLike: {
-        type: Function,
-        required: true
-      }
+<script>
+export default {
+  // Название компонента
+  name: 'CharacterCard',
+  // Определение пропсов, которые принимает компонент
+  props: {
+    // Проп character, который должен быть объектом и является обязательным
+    character: {
+      type: Object,
+      required: true
     },
-    methods: {
+    onLike: {
+      type: Function,
+      required: true
+    }
+  },
+  // Определение событий (ивентов) которые может создавать (эмиттить) данный компонент
+  emits: [ 'like' ],
+  methods: {
     // Метод для вызова пропса onLike с передачей name персонажа
     onLikeCharacter() {
-      this.$emit('like', this.character.id)
-    },
+      this.$emit('like', this.character.id);
+    }
   }
-  }
-  </script>
+};
+</script>

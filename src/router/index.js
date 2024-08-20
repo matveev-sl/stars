@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import StarCharList from '../components/StarCharList.vue';
 import AboutPage from '../components/AboutPage.vue';
 import CharacterDetail from '../components/CharacterDetail.vue';
+import NotFound from '../components/NotFound.vue';
 
 const routes = [
   {
@@ -15,16 +16,20 @@ const routes = [
     component: AboutPage
   },
   {
+    path: '/:catchAll(.*)',
+    name: 'NotFound',
+    component: NotFound
+  },
+  {
     path: '/character/:id', // Динамический маршрут для детальной страницы персонажа
     name: 'CharacterDetail',
-    component: CharacterDetail,
+    component: CharacterDetail
   }
 ];
 
 const router = createRouter({
-    history: createWebHistory('/'), // Используйте '/' напрямую
-    routes
-  });
-  
+  history: createWebHistory('/'), // Используйте '/' напрямую
+  routes
+});
 
-export default router
+export default router;

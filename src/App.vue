@@ -10,17 +10,13 @@
 
 <script>
 
-
-
-import StarCharList from './components/StarCharList.vue'
+import StarCharList from './components/StarCharList.vue';
 export default {
   name: 'App',
   components: {
 
-    StarCharList,
-  
+    StarCharList
+
   }
-}
+};
 </script>
-
-
