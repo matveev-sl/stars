@@ -7,17 +7,20 @@
           <p>Mass: {{ character.mass }}</p>
           <p>Age: {{ character.age }}</p>
           <!-- Добавьте другие детали персонажа, если необходимо -->
+          <v-btn @click="Like">{{ isLiked ? 'Liked' : 'Like' }}</v-btn>
         </v-card-text>
       </v-card>
     </v-container>
   </template>
 
 <script>
+import { useCharactersStore } from '@/store/charactes.js';
 export default {
   name: 'CharacterDetail',
   data() {
     return {
-      character: {}
+      character: {},
+      isLiked: false
     };
   },
   async created() {
@@ -33,6 +36,12 @@ export default {
       } catch (e) {
         console.error('Произошла ошибка', e);
       }
+    },
+    Like() {
+      const characterId = this.$route.params.id; // Получаем ID персонажа
+      const charactersStore = useCharactersStore(); // Доступ к store
+      charactersStore.onLike(characterId); // Вызываем метод onLike из store
+      this.isLiked = !this.isLiked;
     }
   }
 };

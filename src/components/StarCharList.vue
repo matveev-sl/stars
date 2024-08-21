@@ -79,7 +79,7 @@ export default {
     }
   },
   async mounted() {
-    await this.onSearch(this.searchQuery);
+    this.fetchCharacters(API_FIRST_PAGE, this.searchQuery);
   },
   methods: {
     ...mapActions(useCharactersStore, [
@@ -87,8 +87,7 @@ export default {
       'setCharacters',
       'onLike',
       'fetchCharacters',
-      'checkCharactersPerPageLimit',
-      'onSearch'
+      'checkCharactersPerPageLimit'
     ]),
     onCharsPerPageChange() {
       this.currentPage = API_FIRST_PAGE;
@@ -96,7 +95,9 @@ export default {
     async onSearch() {
       this.$router.push({ name: 'Home', replace: true, query: { search: this.searchQuery } });
       this.currentPage = API_FIRST_PAGE;
-      await this.onSearch(this.searchQuery);
+      const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, this.searchQuery);
+      this.setCharacters(characters);
+      this.totalCharacters = totalCharacters;
     }
   }
 };
