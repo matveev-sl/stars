@@ -5,11 +5,8 @@
       label="Search"
       class="mt-4"
     ></v-text-field>
-    <!-- Проверка, идет ли загрузка данных -->
     <div v-if="error">{{ error }}</div>
-    <!-- Если нет загрузки и ошибки, отображается список персонажей -->
     <div v-else-if="isLoading">Загружается...</div>
-    <!-- Проверка, есть ли ошибка -->
     <div v-else>
       <v-list-item
         v-for="(char, index) in currentCharacters"
@@ -37,12 +34,11 @@
 
 <script>
 import CharacterCard from './CharacterCard.vue';
-
 import { mapActions, mapState } from 'pinia';
 import { useCharactersStore } from '@/store/charactes.js';
 
 const API_FIRST_PAGE = 1;
-const API_CHARS_PER_PAGE = 10; // api always return 10 characters
+const API_CHARS_PER_PAGE = 10;
 
 export default {
   name: 'StarCharList',
@@ -52,25 +48,19 @@ export default {
   data() {
     return {
       searchDebounce: undefined,
-      currentPage: API_FIRST_PAGE, // Инициализация текущей страницы как 1
+      currentPage: API_FIRST_PAGE,
       charsPerPage: API_CHARS_PER_PAGE,
       searchQuery: ''
     };
   },
   computed: {
-    // Вычисляемые данные для текущих персонажей на основе текущей страницы
     currentCharacters() {
       return this.getCurrentCharacters(this.currentPage, this.charsPerPage);
     },
     mountPages() {
       return Math.ceil(this.totalCharacters / this.charsPerPage);
     },
-    ...mapState(useCharactersStore, [
-      'characters',
-      'isLoading',
-      'error',
-      'totalCharacters'
-    ])
+    ...mapState(useCharactersStore, [ 'characters', 'isLoading', 'error', 'totalCharacters' ])
   },
   watch: {
     currentPage(newVal) {
@@ -80,31 +70,16 @@ export default {
       this.checkCharactersPerPageLimit(this.currentPage, newVal, this.searchQuery);
     },
     searchQuery() {
-      // Сбрасываем предыдущий таймаут (если есть)
       if (this.searchDebounce) {
         clearTimeout(this.searchDebounce);
       }
-      // Запускаем поиск через 1 секунду
       this.searchDebounce = setTimeout(() => {
-        this.handleSearch(); // Используем переименованный метод
+        this.onSearch();
       }, 1000);
     }
   },
   async mounted() {
-    // Загружаем персонажей для первой страницы при монтировании компонента
-    this.isLoading = true;
-    const { characters, totalCharacters } =
-      await this.fetchCharacters(API_FIRST_PAGE, this.searchQuery);
-    this.setCharacters(characters);
-    this.totalCharacters = totalCharacters;
-    this.isLoading = false;
-  },
-  async created() {
-    // Получаем ID персонажа из параметров маршрута.
-    const searchQuery = this.$route.query.search;
-    if (searchQuery) {
-      this.searchQuery = searchQuery;
-    }
+    await this.onSearch(this.searchQuery);
   },
   methods: {
     ...mapActions(useCharactersStore, [
@@ -113,32 +88,19 @@ export default {
       'onLike',
       'fetchCharacters',
       'checkCharactersPerPageLimit',
-      'onSearch' // Это действие из стора
+      'onSearch'
     ]),
-
     onCharsPerPageChange() {
       this.currentPage = API_FIRST_PAGE;
     },
-
-    async handleSearch() {
-      // Переименованный метод для поиска
-      this.$router.push({
-        name: 'Home',
-        replace: true,
-        query: { search: this.searchQuery }
-      });
+    async onSearch() {
+      this.$router.push({ name: 'Home', replace: true, query: { search: this.searchQuery } });
       this.currentPage = API_FIRST_PAGE;
-      this.isLoading = true;
-      const { characters, totalCharacters } =
-        await this.onSearch(this.currentPage, this.searchQuery); // Вызов действия из стора
-      this.setCharacters(characters);
-      this.totalCharacters = totalCharacters;
-      this.isLoading = false;
+      await this.onSearch(this.searchQuery);
     }
   }
 };
 </script>
 
 <style scoped>
-/* Ваши стили */
 </style>
