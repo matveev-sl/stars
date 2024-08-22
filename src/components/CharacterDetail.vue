@@ -1,6 +1,14 @@
 <template>
     <v-container>
       <v-card>
+      <!-- Показываем скелетон, пока данные загружаются -->
+      <v-skeleton-loader
+        v-if="isLoading"
+        type="card"
+        width="100%"
+        height="200px"
+      ></v-skeleton-loader>
+      <v-card v-else>
         <v-card-title>{{ character.name }}</v-card-title>
         <v-card-text>
           <p>Height: {{ character.height }}</p>
@@ -10,6 +18,7 @@
           <v-btn @click="Like">{{ isLiked ? 'Liked' : 'Like' }}</v-btn>
         </v-card-text>
       </v-card>
+    </v-card>
     </v-container>
   </template>
 
@@ -20,7 +29,8 @@ export default {
   data() {
     return {
       character: {},
-      isLiked: false
+      isLiked: false,
+      isLoading: true
     };
   },
   async created() {
@@ -35,6 +45,9 @@ export default {
         this.character = data;
       } catch (e) {
         console.error('Произошла ошибка', e);
+      }
+      finally {
+        this.isLoading = !this.isLoading;
       }
     },
     Like() {
