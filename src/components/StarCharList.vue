@@ -79,7 +79,11 @@ export default {
     }
   },
   async mounted() {
-    this.fetchCharacters(API_FIRST_PAGE, this.searchQuery);
+    const { characters, totalCharacters } = await this.fetchCharacters(
+      API_FIRST_PAGE, this.searchQuery
+    );
+    this.setTotalCharacters(totalCharacters),
+    this.setCharacters(characters);
   },
   methods: {
     ...mapActions(useCharactersStore, [
@@ -87,7 +91,8 @@ export default {
       'setCharacters',
       'onLike',
       'fetchCharacters',
-      'checkCharactersPerPageLimit'
+      'checkCharactersPerPageLimit',
+      'setTotalCharacters'
     ]),
     onCharsPerPageChange() {
       this.currentPage = API_FIRST_PAGE;
@@ -97,7 +102,7 @@ export default {
       this.currentPage = API_FIRST_PAGE;
       const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, this.searchQuery);
       this.setCharacters(characters);
-      this.totalCharacters = totalCharacters;
+      this.setTotalCharacters(totalCharacters);
     }
   }
 };

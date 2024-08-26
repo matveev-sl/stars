@@ -16,6 +16,9 @@ export const useCharactersStore = defineStore('characters', {
     setCharacters(characters) {
       this.characters = characters;
     },
+    setTotalCharacters(totalCharacters) {
+      this.totalCharacters = totalCharacters;
+    },
     getCurrentCharacters(currentPage, charsPerPage) {
       const startIdx = (currentPage - 1) * charsPerPage;
       return this.characters.slice(startIdx, startIdx + charsPerPage);
