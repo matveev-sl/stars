@@ -24,10 +24,26 @@ export const useCharactersStore = defineStore('characters', {
       return this.characters.slice(startIdx, startIdx + charsPerPage);
     },
     onLike(id) {
-      this.characters = this.characters.map(char => char.id === id
-        ? { ...char, isLiked: !char.isLiked }
-        : char
+      this.characters = this.characters.map((char) =>
+        char.id === id ? { ...char, isLiked: !char.isLiked } : char
       );
+    },
+    async getCharacterById(id) {
+      try {
+        // Выполняем запрос к API для получения данных о персонаже с указанным id
+        const response = await fetch(`https://swapi.dev/api/people/${id}/`);
+
+        // Проверяем, успешен ли запрос
+        if (!response.ok) {
+          return null; // Если запрос не успешен, возвращаем null
+        }
+
+        // Преобразуем ответ в формат JSON и возвращаем его
+        return await response.json();
+      } catch {
+        // В случае ошибки (например, сетевые ошибки) возвращаем null
+        return null;
+      }
     },
     async fetchCharacters(page, search = '') {
       let url = `https://swapi.dev/api/people/?page=${page}&format=json`;
@@ -35,8 +51,8 @@ export const useCharactersStore = defineStore('characters', {
         url += `&search=${search}`;
       }
       return fetch(url)
-        .then(response => response.json())
-        .then(data => {
+        .then((response) => response.json())
+        .then((data) => {
           return {
             totalCharacters: data.count ?? TOTAL_CHARS_FALLBACK_VALUE,
             characters: data.results.map(characterMap)

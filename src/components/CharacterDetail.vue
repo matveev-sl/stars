@@ -15,7 +15,7 @@
           <p>Mass: {{ character.mass }}</p>
           <p>Age: {{ character.age }}</p>
           <!-- Добавьте другие детали персонажа, если необходимо -->
-          <v-btn @click="Like">{{ isLiked ? 'Liked' : 'Like' }}</v-btn>
+          <v-btn @click="toggleLike">{{ isLiked ? 'Liked' : 'Like' }}</v-btn>
         </v-card-text>
       </v-card>
     </v-card>
@@ -23,6 +23,7 @@
   </template>
 
 <script>
+import { mapActions } from 'pinia';
 import { useCharactersStore } from '@/store/charactes.js';
 export default {
   name: 'CharacterDetail',
@@ -35,26 +36,19 @@ export default {
   },
   async created() {
     const characterId = this.$route.params.id; // Получаем ID персонажа из параметров маршрута
-    await this.fetchCharacter(characterId);
+    const characterData = await this.getCharacterById(characterId);
+    if (characterData) {
+      this.character = characterData; // Сохраняем полученные данные
+    }
+
+    this.isLoading = false; // Завершаем загрузку
   },
   methods: {
-    async fetchCharacter(id) {
-      try {
-        const response = await fetch(`https://swapi.dev/api/people/${id}/`);
-        const data = await response.json();
-        this.character = data;
-      } catch (e) {
-        console.error('Произошла ошибка', e);
-      }
-      finally {
-        this.isLoading = !this.isLoading;
-      }
-    },
-    Like() {
-      const characterId = this.$route.params.id; // Получаем ID персонажа
-      const charactersStore = useCharactersStore(); // Доступ к store
-      charactersStore.onLike(characterId); // Вызываем метод onLike из store
-      this.isLiked = !this.isLiked;
+    ...mapActions(useCharactersStore, [
+      'getCharacterById', 'onLike' ]),
+    toggleLike() {
+      this.onLike(this.characterId); // Используем сохраненный ID
+      this.isLiked = true;
     }
   }
 };
