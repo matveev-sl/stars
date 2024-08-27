@@ -12,6 +12,13 @@ export const useCharactersStore = defineStore('characters', {
     error: '',
     totalCharacters: TOTAL_CHARS_FALLBACK_VALUE
   }),
+  getters: {
+    getCharacterById(id) {
+      return this.characters.find((char) => {
+        return id === char.id;
+      }) ?? null;
+    }
+  },
   actions: {
     setCharacters(characters) {
       this.characters = characters;
@@ -27,23 +34,6 @@ export const useCharactersStore = defineStore('characters', {
       this.characters = this.characters.map((char) =>
         char.id === id ? { ...char, isLiked: !char.isLiked } : char
       );
-    },
-    async getCharacterById(id) {
-      try {
-        // Выполняем запрос к API для получения данных о персонаже с указанным id
-        const response = await fetch(`https://swapi.dev/api/people/${id}/`);
-
-        // Проверяем, успешен ли запрос
-        if (!response.ok) {
-          return null; // Если запрос не успешен, возвращаем null
-        }
-
-        // Преобразуем ответ в формат JSON и возвращаем его
-        return await response.json();
-      } catch {
-        // В случае ошибки (например, сетевые ошибки) возвращаем null
-        return null;
-      }
     },
     async fetchCharacters(page, search = '') {
       let url = `https://swapi.dev/api/people/?page=${page}&format=json`;
