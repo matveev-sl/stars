@@ -7,6 +7,9 @@ module.exports = {
     'plugin:vue/vue3-recommended',
     'prettier'
   ],
+  env: {
+    'jest': true
+  },
   plugins: [ 'vue' ],
   parserOptions: {
     ecmaVersion: 'latest'
