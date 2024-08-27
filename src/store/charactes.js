@@ -13,11 +13,11 @@ export const useCharactersStore = defineStore('characters', {
     totalCharacters: TOTAL_CHARS_FALLBACK_VALUE
   }),
   getters: {
-    getCharacterById(id) {
-      return this.characters.find((char) => {
-        return id === char.id;
-      }) ?? null;
-    }
+    // getCharacterById(id) {
+    //   return this.characters.find((char) => {
+    //     return id === char.id;
+    //   }) ?? null;
+    // }
   },
   actions: {
     setCharacters(characters) {

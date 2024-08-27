@@ -1,15 +1,7 @@
 <template>
     <v-container>
       <v-card>
-
-        <!-- <v-skeleton-loader
-        v-if="isLoading"
-        type="card"
-        width="100%"
-        height="200px"
-      ></v-skeleton-loader>
-      <v-card v-else> -->
-        <v-card-title>{{ getCharacterById(characterId).name }}</v-card-title>
+        <v-card-title>{{ character.name }}</v-card-title>
         <v-card-text>
           <p>Height: {{ character.height }}</p>
           <p>Mass: {{ character.mass }}</p>
@@ -28,39 +20,24 @@ import { useCharactersStore } from '@/store/charactes.js';
 export default {
   name: 'CharacterDetail',
   data() {
-    return {
-      // character: {},
-
-      isLoading: true
-    };
+    return {};
   },
-  // async created() {
-  //   const characterId = this.$route.params.id;
-  //   console.log('Created: ', characterId);
-  //   const characterData = await this.getCharacterById(characterId);
-  //   if (characterData) {
-  //     this.character = characterData; // Сохраняем полученные данные
-  //   }
-  //   console.log ('Test', characterData);
-  //   this.isLoading = false; // Завершаем загрузку
-  // },
   computed: {
-    // ...mapState(useCharactersStore, [ 'characters' ]),
+    ...mapState(useCharactersStore, [ 'characters' ]),
     characterId () {
-      console.log('vethid');
-      const ss = this.$route.params.id;
-      console.log ('ss', ss);
-      return ss;
+      return this.$route.params.id;
+    },
+    character () {
+      return this.characters.find((char) => {
+        return this.characterId === char.id;
+      }) ?? null;
     }
-    // character () {
-    //   return this.characters.find((char) => {
-    //     return this.characterId === char.id;
-    //   }) ?? null;
-    // }
   },
   methods: {
     ...mapActions(useCharactersStore, [
-      'getCharacterById', 'onLike' ]),
+      // 'getCharacterById',
+      'onLike'
+    ]),
     toggleLike() {
       this.onLike(this.characterId); // Используем сохраненный ID
 

@@ -79,11 +79,12 @@ export default {
     }
   },
   async mounted() {
-    const { characters, totalCharacters } = await this.fetchCharacters(
-      API_FIRST_PAGE, this.searchQuery
-    );
-    this.setTotalCharacters(totalCharacters),
-    this.setCharacters(characters);
+    this.checkCharactersPerPageLimit(this.currentPage, this.charsPerPage, this.searchQuery);
+    // const { characters, totalCharacters } = await this.fetchCharacters(
+    //   API_FIRST_PAGE, this.searchQuery
+    // );
+    // this.setTotalCharacters(totalCharacters),
+    // this.setCharacters(characters);
   },
   methods: {
     ...mapActions(useCharactersStore, [
