@@ -15,7 +15,7 @@ export const characterMap = (apiCharacter) => {
   };
 };
 
-const parseId = (url) => {
+export const parseId = (url) => {
   // expected url: 'https://swapi.dev/api/people/2/'
   const idRegex = /.*people\/(\d+)/;
   const match = url.match(idRegex);

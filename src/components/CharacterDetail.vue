@@ -7,32 +7,40 @@
           <p>Mass: {{ character.mass }}</p>
           <p>Age: {{ character.age }}</p>
           <!-- Добавьте другие детали персонажа, если необходимо -->
+          <v-btn @click="toggleLike">{{ character.isLiked ? 'Liked' : 'Like' }}</v-btn>
         </v-card-text>
       </v-card>
+    <!-- </v-card> -->
     </v-container>
   </template>
 
 <script>
+import { mapActions, mapState } from 'pinia';
+import { useCharactersStore } from '@/store/charactes.js';
 export default {
   name: 'CharacterDetail',
   data() {
-    return {
-      character: {}
-    };
+    return {};
   },
-  async created() {
-    const characterId = this.$route.params.id; // Получаем ID персонажа из параметров маршрута
-    await this.fetchCharacter(characterId);
+  computed: {
+    ...mapState(useCharactersStore, [ 'characters' ]),
+    characterId () {
+      return this.$route.params.id;
+    },
+    character () {
+      return this.characters.find((char) => {
+        return this.characterId === char.id;
+      }) ?? null;
+    }
   },
   methods: {
-    async fetchCharacter(id) {
-      try {
-        const response = await fetch(`https://swapi.dev/api/people/${id}/`);
-        const data = await response.json();
-        this.character = data;
-      } catch (e) {
-        console.error('Произошла ошибка', e);
-      }
+    ...mapActions(useCharactersStore, [
+      // 'getCharacterById',
+      'onLike'
+    ]),
+    toggleLike() {
+      this.onLike(this.characterId); // Используем сохраненный ID
+
     }
   }
 };

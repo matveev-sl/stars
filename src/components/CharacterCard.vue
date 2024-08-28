@@ -10,7 +10,7 @@
         <!-- Подзаголовок с массой персонажа VListItemSubtitle -->
         <v-list-item-subtitle>Mass: {{ character.mass }}</v-list-item-subtitle>
         <v-list-item-subtitle>Age: {{ character.age }}</v-list-item-subtitle>
-        <v-btn @click="onLikeCharacter" >
+        <v-btn @click.stop.prevent="onLikeCharacter" >
           {{ character.isLiked ? 'Liked' : 'Like' }}
         </v-btn>
     </v-list-item>
