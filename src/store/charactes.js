@@ -8,11 +8,12 @@ const TOTAL_CHARS_FALLBACK_VALUE = 100;
 export const useCharactersStore = defineStore('characters', {
   state: () => ({
     characters: [],
-    isLoading: false,
-    error: '',
     totalCharacters: TOTAL_CHARS_FALLBACK_VALUE
   }),
   getters: {
+    // getUserById: (state) => {
+    //   return (userId) => state.users.find((user) => user.id === userId)
+    // },
     // getCharacterById(id) {
     //   return this.characters.find((char) => {
     //     return id === char.id;

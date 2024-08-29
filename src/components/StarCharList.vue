@@ -47,6 +47,8 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
+      error: '',
       searchDebounce: undefined,
       currentPage: API_FIRST_PAGE,
       charsPerPage: API_CHARS_PER_PAGE,
@@ -60,7 +62,7 @@ export default {
     mountPages() {
       return Math.ceil(this.totalCharacters / this.charsPerPage);
     },
-    ...mapState(useCharactersStore, [ 'characters', 'isLoading', 'error', 'totalCharacters' ])
+    ...mapState(useCharactersStore, [ 'characters', 'totalCharacters' ])
   },
   watch: {
     currentPage(newVal) {
