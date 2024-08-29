@@ -6,11 +6,9 @@
           <p>Height: {{ character.height }}</p>
           <p>Mass: {{ character.mass }}</p>
           <p>Age: {{ character.age }}</p>
-          <!-- Добавьте другие детали персонажа, если необходимо -->
           <v-btn @click="toggleLike">{{ character.isLiked ? 'Liked' : 'Like' }}</v-btn>
         </v-card-text>
       </v-card>
-    <!-- </v-card> -->
     </v-container>
   </template>
 
@@ -23,21 +21,16 @@ export default {
     return {};
   },
   computed: {
-    ...mapState(useCharactersStore, [ 'characters' ]),
+    ...mapState(useCharactersStore, [ 'getCharacterById' ]),
     characterId () {
       return this.$route.params.id;
     },
     character () {
-      return this.characters.find((char) => {
-        return this.characterId === char.id;
-      }) ?? null;
+      return this.getCharacterById(this.characterId);
     }
   },
   methods: {
-    ...mapActions(useCharactersStore, [
-      // 'getCharacterById',
-      'onLike'
-    ]),
+    ...mapActions(useCharactersStore, [ 'onLike' ]),
     toggleLike() {
       this.onLike(this.characterId); // Используем сохраненный ID
 

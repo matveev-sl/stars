@@ -65,12 +65,12 @@ export default {
     ...mapState(useCharactersStore, [ 'characters', 'totalCharacters' ])
   },
   watch: {
-    currentPage(newVal) {
-      this.checkCharactersPerPageLimit(newVal, this.charsPerPage, this.searchQuery);
-    },
-    charsPerPage(newVal) {
-      this.checkCharactersPerPageLimit(this.currentPage, newVal, this.searchQuery);
-    },
+    // currentPage(newVal) {
+    //   this.checkCharactersPerPageLimit(newVal, this.charsPerPage, this.searchQuery);
+    // },
+    // charsPerPage(newVal) {
+    //   this.checkCharactersPerPageLimit(this.currentPage, newVal, this.searchQuery);
+    // },
     searchQuery() {
       if (this.searchDebounce) {
         clearTimeout(this.searchDebounce);
@@ -81,12 +81,11 @@ export default {
     }
   },
   async mounted() {
-    this.checkCharactersPerPageLimit(this.currentPage, this.charsPerPage, this.searchQuery);
-    // const { characters, totalCharacters } = await this.fetchCharacters(
-    //   API_FIRST_PAGE, this.searchQuery
-    // );
-    // this.setTotalCharacters(totalCharacters),
-    // this.setCharacters(characters);
+
+    const error = await this.checkCharactersPerPageLimit(
+      this.currentPage, this.charsPerPage, this.searchQuery);
+
+    this.error = error;
   },
   methods: {
     ...mapActions(useCharactersStore, [
@@ -101,11 +100,11 @@ export default {
       this.currentPage = API_FIRST_PAGE;
     },
     async onSearch() {
-      this.$router.push({ name: 'Home', replace: true, query: { search: this.searchQuery } });
-      this.currentPage = API_FIRST_PAGE;
-      const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, this.searchQuery);
-      this.setCharacters(characters);
-      this.setTotalCharacters(totalCharacters);
+      // this.$router.push({ name: 'Home', replace: true, query: { search: this.searchQuery } });
+      // this.currentPage = API_FIRST_PAGE;
+      // const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, this.searchQuery);
+      // this.setCharacters(characters);
+      // this.setTotalCharacters(totalCharacters);
     }
   }
 };
