@@ -8,16 +8,19 @@ const TOTAL_CHARS_FALLBACK_VALUE = 100;
 export const useCharactersStore = defineStore('characters', {
   state: () => ({
     characters: [],
-    isLoading: false,
-    error: '',
     totalCharacters: TOTAL_CHARS_FALLBACK_VALUE
   }),
   getters: {
-    // getCharacterById(id) {
-    //   return this.characters.find((char) => {
-    //     return id === char.id;
-    //   }) ?? null;
-    // }
+    // getUserById: (state) => {
+    //   return (userId) => state.users.find((user) => user.id === userId)
+    // },
+    getCharacterById: (state) => {
+      function getter(charId) {
+        const char = state.characters.find((char) => char.id === charId);
+        return char;
+      }
+      return getter;
+    }
   },
   actions: {
     setCharacters(characters) {
@@ -36,7 +39,7 @@ export const useCharactersStore = defineStore('characters', {
       );
     },
     async fetchCharacters(page, search = '') {
-      let url = `https://swapi.dev/api/people/?page=${page}&format=json`;
+      let url = `https://swapi.dev/api/peo__ple/?page=${page}&format=json`;
       if (search.length > 0) {
         url += `&search=${search}`;
       }
@@ -47,31 +50,27 @@ export const useCharactersStore = defineStore('characters', {
             totalCharacters: data.count ?? TOTAL_CHARS_FALLBACK_VALUE,
             characters: data.results.map(characterMap)
           };
-        })
-        .catch((e) => {
-          console.error('Произошла ошибка', e);
-          this.error = 'Серверная ошибка';
         });
     },
     async checkCharactersPerPageLimit(page, limit, searchQuery) {
       if (this.getCurrentCharacters(page, limit).length >= limit * page) {
-        return;
+        return undefined;
       }
-      this.isLoading = true;
-      const startPage = Math.ceil(this.characters.length / API_CHARS_PER_PAGE) + API_FIRST_PAGE;
-      const finalPage = Math.ceil(page * limit / API_CHARS_PER_PAGE);
       try {
+        const startPage = Math.ceil(this.characters.length / API_CHARS_PER_PAGE) + API_FIRST_PAGE;
+        const finalPage = Math.ceil(page * limit / API_CHARS_PER_PAGE);
+
         for (let p = startPage; p <= finalPage; p++) {
           const { characters, totalCharacters } = await this.fetchCharacters(p, searchQuery);
           this.setCharacters([ ...this.characters, ...characters ]);
           this.totalCharacters = totalCharacters;
         }
+        return undefined;
       } catch (error) {
-        console.error('Ошибка при загрузке персонажей:', error);
-        this.error = 'Ошибка при загрузке данных';
-      } finally {
-        this.isLoading = false;
+        console.error ('Ошибка пейдж лимит', error);
+        throw error;
       }
+
     }
   }
 });
