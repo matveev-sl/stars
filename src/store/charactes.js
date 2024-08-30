@@ -68,7 +68,7 @@ export const useCharactersStore = defineStore('characters', {
         return undefined;
       } catch (error) {
         console.error ('Ошибка пейдж лимит', error);
-        return 'Ошибка во время выполнения Фетч';
+        throw error;
       }
 
     }

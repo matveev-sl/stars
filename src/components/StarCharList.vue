@@ -81,11 +81,12 @@ export default {
     }
   },
   async mounted() {
-
-    const error = await this.checkCharactersPerPageLimit(
-      this.currentPage, this.charsPerPage, this.searchQuery);
-
-    this.error = error;
+    try {
+      await this.checkCharactersPerPageLimit(
+        this.currentPage, this.charsPerPage, this.searchQuery);
+    } catch (error) {
+      this.error = 'XXX - Error';
+    }
   },
   methods: {
     ...mapActions(useCharactersStore, [
