@@ -15,7 +15,7 @@ class Character {
   }
 
   isAdult() {
-    return this.birthYear > 18;
+    return this.getAge() > 18;
   };
 
   getFullName () {
@@ -24,22 +24,40 @@ class Character {
   };
 
   setFullName () {
-    if (this.name.split(' ').lenght > 2) {
+    if (this.name.split(' ').length > 2) {
       return console.error ('Неверный формат имени');
     }
     this.lastName = this.name.split(' ')[0];
-    this.name = this.name.split(' ')[1];
+    this.name = this.name.split(' ')[1] || '';
+    this.name = this.name.replace(/[^a-zа-яё0-9]+/gi, '').toLowerCase();
+    this.name = this.name[0].toUpperCase() + this.name.slice(1);
+    this.lastName = this.lastName.replace(/[^a-zа-яё0-9]+/gi, '').toLowerCase();
+    this.lastName = this.lastName[0].toUpperCase() + this.lastName.slice(1);
     console.log(this.lastName, this.name);
-    return this.lastName;
+    return `${this.lastName} ${this.name}`;
 
   }
 }
 
-const character = new Character('Rogov Vasya');
+const character = new Character('rog;ov vasy%%a');
 character.setAge(35);
 
 console.log(character.name, character.birthYear, character.getAge(), character.isAdult(), character.setFullName());
 
+test('check correct name and last name', () => {
+  const result = new Character('rog;ov vasy%%a');
+  expect(result).toEqual('Rogov Vasya');
+});
+
+test('check correct name and last name', () => {
+  const result = new Character('rog;ov');
+  expect(result).toEqual('Rogov');
+});
+
+test('check correct name and last name', () => {
+  const result = new Character('rog;ov Vasya');
+  expect(result).toEqual('Rogov Vasya');
+});
 // 1. дописать геттер isAdult который возвращает тру, если человеку есть 18 лет, фолс если человеку нет 18 лет
 // 2. мы хотим хранить "firstName" и "lastName" в раздельных полях, в конструкторе класса принимать два аргумента,
 // где firstName обязательное, lastName опциональное и если его нет - то заполнять пустой строкой
