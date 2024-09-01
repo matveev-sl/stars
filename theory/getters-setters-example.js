@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-class Character {
+export class Character {
   constructor(name, lastname = '') {
     this.name = name;
     this.lastname = lastname;
@@ -44,20 +44,6 @@ character.setAge(35);
 
 console.log(character.name, character.birthYear, character.getAge(), character.isAdult(), character.setFullName());
 
-test('check correct name and last name', () => {
-  const result = new Character('rog;ov vasy%%a');
-  expect(result).toEqual('Rogov Vasya');
-});
-
-test('check correct name and last name', () => {
-  const result = new Character('rog;ov');
-  expect(result).toEqual('Rogov');
-});
-
-test('check correct name and last name', () => {
-  const result = new Character('rog;ov Vasya');
-  expect(result).toEqual('Rogov Vasya');
-});
 // 1. дописать геттер isAdult который возвращает тру, если человеку есть 18 лет, фолс если человеку нет 18 лет
 // 2. мы хотим хранить "firstName" и "lastName" в раздельных полях, в конструкторе класса принимать два аргумента,
 // где firstName обязательное, lastName опциональное и если его нет - то заполнять пустой строкой
