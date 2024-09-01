@@ -3,8 +3,7 @@
 // Это задачки на методы map, filter, reduce...
 const string = 'hello my name is petya';
 const array = string.split(' ');
-let resul = array.map((elem) => elem[0].toUpperCase() + elem.slice(1));
-resul = resul.join(' ');
+let resul = array.map((elem) => elem[0].toUpperCase() + elem.slice(1)).join(' ');
 console.log(resul);
 
 let string1 = 'abc';

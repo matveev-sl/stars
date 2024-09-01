@@ -1,7 +1,8 @@
 /* eslint-disable max-len */
 class Character {
-  constructor(name) {
+  constructor(name, lastname = '') {
     this.name = name;
+    this.lastname = lastname;
     this.birthYear = undefined;
   }
 
@@ -12,12 +13,32 @@ class Character {
   getAge() {
     return new Date().getFullYear() - this.birthYear;
   }
+
+  isAdult() {
+    return this.birthYear > 18;
+  };
+
+  getFullName () {
+    let fullName = `${this.name} ${this.lastname}`;
+    return fullName;
+  };
+
+  setFullName () {
+    if (this.name.split(' ').lenght > 2) {
+      return console.error ('Неверный формат имени');
+    }
+    this.lastName = this.name.split(' ')[0];
+    this.name = this.name.split(' ')[1];
+    console.log(this.lastName, this.name);
+    return this.lastName;
+
+  }
 }
 
-const character = new Character('Vasya');
+const character = new Character('Rogov Vasya');
 character.setAge(35);
 
-console.log(character.name, character.birthYear, character.getAge());
+console.log(character.name, character.birthYear, character.getAge(), character.isAdult(), character.setFullName());
 
 // 1. дописать геттер isAdult который возвращает тру, если человеку есть 18 лет, фолс если человеку нет 18 лет
 // 2. мы хотим хранить "firstName" и "lastName" в раздельных полях, в конструкторе класса принимать два аргумента,
