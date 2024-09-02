@@ -15,12 +15,12 @@ export class Character {
   }
 
   isAdult() {
-    return this.getAge() > 18;
+    return this.getAge() >= 18;
   };
 
   getFullName () {
-    let fullName = `${this.name} ${this.lastname}`;
-    return fullName;
+    return `${this.name} ${this.lastname}`;
+
   };
 
   setFullName () {

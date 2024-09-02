@@ -65,12 +65,12 @@ export default {
     ...mapState(useCharactersStore, [ 'characters', 'totalCharacters' ])
   },
   watch: {
-    // currentPage(newVal) {
-    //   this.checkCharactersPerPageLimit(newVal, this.charsPerPage, this.searchQuery);
-    // },
-    // charsPerPage(newVal) {
-    //   this.checkCharactersPerPageLimit(this.currentPage, newVal, this.searchQuery);
-    // },
+    async currentPage(newVal) {
+      await this.checkCharactersPerPageLimit(newVal, this.charsPerPage, this.searchQuery);
+    },
+    async charsPerPage(newVal) {
+      await this.checkCharactersPerPageLimit(this.currentPage, newVal, this.searchQuery);
+    },
     searchQuery() {
       if (this.searchDebounce) {
         clearTimeout(this.searchDebounce);
