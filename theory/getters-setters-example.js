@@ -25,16 +25,16 @@ export class Character {
 
   setFullName () {
     if (this.name.split(' ').length > 2) {
-      return console.error ('Неверный формат имени');
+      throw new Error('Имя не должно содержать более двух слов');
     }
     this.lastName = this.name.split(' ')[0];
-    this.name = this.name.split(' ')[1] || '';
-    this.name = this.name.replace(/[^a-zа-яё0-9]+/gi, '').toLowerCase();
+    this.name = this.name.split(' ')[1] ?? '';
+    const filter = /[^a-zа-яё0-9]+/gi; // все не буквенные значения кириллицы и латиницы
+    this.name = this.name.replace(filter, '').toLowerCase();
     this.name = this.name[0].toUpperCase() + this.name.slice(1);
-    this.lastName = this.lastName.replace(/[^a-zа-яё0-9]+/gi, '').toLowerCase();
+    this.lastName = this.lastName.replace(filter, '').toLowerCase();
     this.lastName = this.lastName[0].toUpperCase() + this.lastName.slice(1);
     console.log(this.lastName, this.name);
-    return `${this.lastName} ${this.name}`;
 
   }
 }
