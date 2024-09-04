@@ -1,6 +1,6 @@
 <template>
     <!-- Компонент списка VListItem от Vuetify -->
-    <v-list-item>
+    <v-list-item v-if="character" :to="{ name: 'CharacterDetail', params: { id: character.id } }">
       <!-- Содержимое элемента списка VListItemContent -->
       <v-list-item-subtitle>ID: {{ character.id }}</v-list-item-subtitle>
         <!-- Заголовок элемента списка VListItemTitle -->
@@ -14,6 +14,9 @@
           {{ character.isLiked ? 'Liked' : 'Like' }}
         </v-btn>
     </v-list-item>
+    <v-list-item v-else>
+      Загружается...
+    </v-list-item>
   </template>
 
 <script>
@@ -25,7 +28,7 @@ export default {
     // Проп character, который должен быть объектом и является обязательным
     character: {
       type: Object,
-      required: true
+      required: false
     },
     onLike: {
       type: Function,

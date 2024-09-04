@@ -6,15 +6,12 @@
       class="mt-4"
     ></v-text-field>
     <div v-if="error">{{ error }}</div>
-    <div v-else-if="isLoading">Загружается...</div>
     <div v-else>
-      <v-list-item
+      <CharacterCard
         v-for="(char, index) in currentCharacters"
         :key="index"
-        :to="{ name: 'CharacterDetail', params: { id: char.id } }"
-      >
-        <CharacterCard :character="char" @like="onLike" />
-      </v-list-item>
+        :character="char" @like="onLike"
+      />
     </div>
     <v-select
       v-model="charsPerPage"
@@ -47,7 +44,6 @@ export default {
   },
   data() {
     return {
-      isLoading: false,
       error: '',
       searchDebounce: undefined,
       currentPage: API_FIRST_PAGE,
@@ -55,6 +51,9 @@ export default {
       searchQuery: ''
     };
   },
+  mounted() {
+      this.triggerServerFetch(this.currentPage, this.charsPerPage, this.searchQuery, true)
+    },
   computed: {
     currentCharacters() {
       return this.getCurrentCharacters(this.currentPage, this.charsPerPage);
@@ -62,15 +61,15 @@ export default {
     mountPages() {
       return Math.ceil(this.totalCharacters / this.charsPerPage);
     },
-    ...mapState(useCharactersStore, [ 'characters', 'totalCharacters' ])
+    ...mapState(useCharactersStore, [ 'totalCharacters' ])
   },
   watch: {
-    // currentPage(newVal) {
-    //   this.checkCharactersPerPageLimit(newVal, this.charsPerPage, this.searchQuery);
-    // },
-    // charsPerPage(newVal) {
-    //   this.checkCharactersPerPageLimit(this.currentPage, newVal, this.searchQuery);
-    // },
+    currentPage(newVal) {
+      this.triggerServerFetch(this.currentPage, this.charsPerPage, this.searchQuery)
+    },
+    charsPerPage(newVal) {
+      this.triggerServerFetch(this.currentPage, this.charsPerPage, this.searchQuery)
+    },
     searchQuery() {
       if (this.searchDebounce) {
         clearTimeout(this.searchDebounce);
@@ -80,32 +79,20 @@ export default {
       }, 1000);
     }
   },
-  async mounted() {
-    try {
-      await this.checkCharactersPerPageLimit(
-        this.currentPage, this.charsPerPage, this.searchQuery);
-    } catch (error) {
-      this.error = 'XXX - Error';
-    }
-  },
   methods: {
     ...mapActions(useCharactersStore, [
       'getCurrentCharacters',
-      'setCharacters',
       'onLike',
-      'fetchCharacters',
-      'checkCharactersPerPageLimit',
-      'setTotalCharacters'
+      'triggerServerFetch',
     ]),
     onCharsPerPageChange() {
       this.currentPage = API_FIRST_PAGE;
     },
     async onSearch() {
-      // this.$router.push({ name: 'Home', replace: true, query: { search: this.searchQuery } });
-      // this.currentPage = API_FIRST_PAGE;
-      // const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, this.searchQuery);
-      // this.setCharacters(characters);
-      // this.setTotalCharacters(totalCharacters);
+      console.log('onSearch', this.searchQuery)
+      this.$router.push({ name: 'Home', replace: true, query: { search: this.searchQuery } });
+      this.currentPage = API_FIRST_PAGE;
+      this.triggerServerFetch(this.currentPage, this.charsPerPage, this.searchQuery, true)
     }
   }
 };
