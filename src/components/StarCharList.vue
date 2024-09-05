@@ -65,12 +65,12 @@ export default {
     ...mapState(useCharactersStore, [ 'characters', 'totalCharacters' ])
   },
   watch: {
-    // currentPage(newVal) {
-    //   this.checkCharactersPerPageLimit(newVal, this.charsPerPage, this.searchQuery);
-    // },
-    // charsPerPage(newVal) {
-    //   this.checkCharactersPerPageLimit(this.currentPage, newVal, this.searchQuery);
-    // },
+    async currentPage(newVal) {
+      await this.checkCharactersPerPageLimit(newVal, this.charsPerPage, this.searchQuery);
+    },
+    async charsPerPage(newVal) {
+      await this.checkCharactersPerPageLimit(this.currentPage, newVal, this.searchQuery);
+    },
     searchQuery() {
       if (this.searchDebounce) {
         clearTimeout(this.searchDebounce);
@@ -81,12 +81,18 @@ export default {
     }
   },
   async mounted() {
+    const searchQuery = this.$route?.query?.search ?? '';
+    // this.searchQuery = searchQuery;
+    console.log ('i am mounted', searchQuery);
     try {
       await this.checkCharactersPerPageLimit(
-        this.currentPage, this.charsPerPage, this.searchQuery);
+        this.currentPage, this.charsPerPage, searchQuery);
     } catch (error) {
       this.error = 'XXX - Error';
     }
+  },
+  unmounted() {
+    console.log ('im unmounted');
   },
   methods: {
     ...mapActions(useCharactersStore, [
@@ -101,11 +107,11 @@ export default {
       this.currentPage = API_FIRST_PAGE;
     },
     async onSearch() {
-      // this.$router.push({ name: 'Home', replace: true, query: { search: this.searchQuery } });
-      // this.currentPage = API_FIRST_PAGE;
-      // const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, this.searchQuery);
-      // this.setCharacters(characters);
-      // this.setTotalCharacters(totalCharacters);
+      this.$router.push({ name: 'Home', replace: true, query: { search: this.searchQuery } });
+      this.currentPage = API_FIRST_PAGE;
+      const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, this.searchQuery);
+      this.setCharacters(characters);
+      this.setTotalCharacters(totalCharacters);
     }
   }
 };

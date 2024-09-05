@@ -39,7 +39,7 @@ export const useCharactersStore = defineStore('characters', {
       );
     },
     async fetchCharacters(page, search = '') {
-      let url = `https://swapi.dev/api/peo__ple/?page=${page}&format=json`;
+      let url = `https://swapi.dev/api/people/?page=${page}&format=json`;
       if (search.length > 0) {
         url += `&search=${search}`;
       }

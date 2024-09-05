@@ -1,7 +1,8 @@
 /* eslint-disable max-len */
-class Character {
-  constructor(name) {
+export class Character {
+  constructor(name, lastname = '') {
     this.name = name;
+    this.lastname = lastname;
     this.birthYear = undefined;
   }
 
@@ -12,12 +13,36 @@ class Character {
   getAge() {
     return new Date().getFullYear() - this.birthYear;
   }
+
+  isAdult() {
+    return this.getAge() >= 18;
+  };
+
+  getFullName () {
+    return `${this.name} ${this.lastname}`;
+
+  };
+
+  setFullName () {
+    if (this.name.split(' ').length > 2) {
+      throw new Error('Имя не должно содержать более двух слов');
+    }
+    this.lastName = this.name.split(' ')[0];
+    this.name = this.name.split(' ')[1] ?? '';
+    const filter = /[^a-zа-яё0-9]+/gi; // все не буквенные значения кириллицы и латиницы
+    this.name = this.name.replace(filter, '').toLowerCase();
+    this.name = this.name[0].toUpperCase() + this.name.slice(1);
+    this.lastName = this.lastName.replace(filter, '').toLowerCase();
+    this.lastName = this.lastName[0].toUpperCase() + this.lastName.slice(1);
+    console.log(this.lastName, this.name);
+
+  }
 }
 
-const character = new Character('Vasya');
+const character = new Character('rog;ov vasy%%a');
 character.setAge(35);
 
-console.log(character.name, character.birthYear, character.getAge());
+console.log(character.name, character.birthYear, character.getAge(), character.isAdult(), character.setFullName());
 
 // 1. дописать геттер isAdult который возвращает тру, если человеку есть 18 лет, фолс если человеку нет 18 лет
 // 2. мы хотим хранить "firstName" и "lastName" в раздельных полях, в конструкторе класса принимать два аргумента,
