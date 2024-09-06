@@ -10,46 +10,77 @@ const input = [  {    name: "John",
     name: "Mark",
     age: 56,
   }]
-const output = 43
-console.log (input.age)
 
 
+const bigesstNumber = input.sort((a, b) => b.age - a.age)
+const output = bigesstNumber[0].age - bigesstNumber[1].age
+console.log (output)
 
 
-
-
-
-
-
-
-
-> Вова Кромм:
 2. У тебя есть массив букв, надо посчитать каждую букву и вывести объект формата
 
 
 const input = ["a", "c", "a", "d"]
-const output = {
-  "a": 2,
-  "b": 1,
-  "c": 1
-}
+const letterCount = {};
 
-> Вова Кромм:
-3. У тебя есть массив студентовconst students = [   { name: "Alice", scores: [90, 85, 97] },
+input.forEach(letter => {
+  letterCount[letter] = (letterCount[letter] || 0) + 1;
+});
+const result = Object.keys(letterCount).map(letter => {
+  return { Буква: letter, Счет: letterCount[letter] };
+});
+console.log(result);
+
+// 3. У тебя есть массив студентов
+
+const students = [   { name: "Alice", scores: [90, 85, 97]},
   { name: "Bob", scores: [75, 80] },
 ];
+for (let i = 0; i < students.length; i++) {
+students[i].scores.sort((a, b) => b - a)
+let sum = {}
+  sum = students[i].scores.reduce((acc, curr) => (acc + curr), 0);
+  let average = sum/students[i].scores.length
+  console.log (students[i].name + " средний бал " + average)
+  let goodStudents = ''
+  if (average > 90) {
+    console.log (students[i].name + " хороший студент")
+  }
+
+}
+let bestStudent = ''
+if (students[0].scores[0]>students[1].scores[0]) {
+  bestStudent = students[0].name
+}
+else 
+bestStudent = students[1].name
+console.log ("Лучий студент " + bestStudent)
 
 
-Тебе надо:
-Вывести имя студента с лучшим средним балломВывести всех студентов со средним баллом больше 90Добавить каждому студенту средний балл
 
-> Вова Кромм:
-4. надо напистаь функцию которая принимает два (несколько) объектов и "сливает" их в единый.const a = {name: "Vasya", age: 40}const b = {lastName: "Ivanov"}
+
+
+// Тебе надо:
+// Вывести имя студента с лучшим средним балломВывести всех студентов со средним баллом больше 90Добавить каждому студенту средний балл
+
+// > Вова Кромм:
+// 4. надо напистаь функцию которая принимает два (несколько) объектов и "сливает" их в единый.
+
+const a = {name: "Vasya", age: 40} 
+const b = {lastName: "Ivanov"}
 function merge(a, b){
-} // return {name: "Vasya", age: 40, lastName: "Ivanov"}
 
-> Вова Кромм:
-5. У тебя есть массив продуктов с категориями:const products = [   { name: "Product 1", price: 20, category: "Electronics" },
+const res = {...a, ...b}
+return res
+} 
+
+const obj = merge(a,b)
+console.log (obj)
+// return {name: "Vasya", age: 40, lastName: "Ivanov"}
+// > Вова Кромм:
+// 5. У тебя есть массив продуктов с категориями:
+
+const products = [   { name: "Product 1", price: 20, category: "Electronics" },
   { name: "Product 2", price: 30, category: "Clothes" },
   { name: "Product 3", price: 40, category: "Electronics" },
   { name: "Product 4", price: 50, category: "Clothes" },
@@ -58,10 +89,15 @@ function merge(a, b){
   { name: "Product 7", price: 80, category: "Clothes" },
   { name: "Product 8", price: 90, category: "Electronics" },
 ];
-
-
+const names = {}
+for (let i = 0; i < products[i].category.length; i++)
+{
+  console.log (products[i].category)
+}
 Тебе надо:
-Вывести объект где ключ - название категории а значение количество товаров в категорииВывести объект где ключ- название категории а значение - средняя ценаВывести список всех категорий
+Вывести объект где ключ - название категории а значение количество товаров в категорииВ
+ывести объект где ключ- название категории а значение - средняя цена
+Вывести список всех категорий
 
 > Вова Кромм:
 Задачки из моего загашника. Они чуточку посложнее, чем были до этого, но тут может быть до 100 строчек кода, которые было бы интересно обсудить и посмотреть
