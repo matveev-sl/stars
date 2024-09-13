@@ -84,7 +84,12 @@ export default {
   },
   async mounted() {
     const searchQuery = this.$route?.query?.search ?? '';
-    // this.searchQuery = searchQuery;
+    const currentPage = this.$route?.query?.page ?? API_FIRST_PAGE;
+    const charsPerPage = this.$route?.query?.limit ?? API_CHARS_PER_PAGE;
+    this.searchQuery = searchQuery;
+    this.currentPage = currentPage;
+    this.charsPerPage = charsPerPage;
+
     console.log ('i am mounted', searchQuery);
     try {
       await this.checkCharactersPerPageLimit(
@@ -106,7 +111,9 @@ export default {
       'setTotalCharacters'
     ]),
     onCharsPerPageChange() {
+      if (this.currentPage !== API_FIRST_PAGE) {
       this.currentPage = API_FIRST_PAGE;
+    }
     },
     updateUrl() {
     this.$router.push({
@@ -121,7 +128,8 @@ export default {
   },
     async onSearch() {
       this.updateUrl();
-      this.currentPage = API_FIRST_PAGE;
+      if (this.searchQuery !== this.$route.query.search) {
+      this.currentPage = API_FIRST_PAGE;}
       const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, this.searchQuery);
       this.setCharacters(characters);
       this.setTotalCharacters(totalCharacters);
@@ -132,3 +140,4 @@ export default {
 
 <style scoped>
 </style>
+// 
