@@ -66,9 +66,11 @@ export default {
   },
   watch: {
     async currentPage(newVal) {
+      this.updateUrl();
       await this.checkCharactersPerPageLimit(newVal, this.charsPerPage, this.searchQuery);
     },
     async charsPerPage(newVal) {
+      this.updateUrl();
       await this.checkCharactersPerPageLimit(this.currentPage, newVal, this.searchQuery);
     },
     searchQuery() {
@@ -106,8 +108,19 @@ export default {
     onCharsPerPageChange() {
       this.currentPage = API_FIRST_PAGE;
     },
+    updateUrl() {
+    this.$router.push({
+      name: 'Home',
+      replace: true,
+      query: {
+        search: this.searchQuery,
+        page: this.currentPage,
+        limit: this.charsPerPage
+      }
+    });
+  },
     async onSearch() {
-      this.$router.push({ name: 'Home', replace: true, query: { search: this.searchQuery } });
+      this.updateUrl();
       this.currentPage = API_FIRST_PAGE;
       const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, this.searchQuery);
       this.setCharacters(characters);
