@@ -23,29 +23,27 @@ export class Character {
     }
     let lastName = this.name.split(' ')[1];
     let firstName = this.name.split(' ')[0] ?? '';
-    
+
     const filter = /[^a-zа-яё\s]+/gi;
-    firstName= firstName.replace(filter, '').toLowerCase(); 
+    firstName = firstName.replace(filter, '').toLowerCase();
     firstName = firstName[0].toUpperCase() + firstName.slice(1);
     lastName = lastName.replace(filter, '').toLowerCase();
     lastName = lastName[0].toUpperCase() + lastName.slice(1);
-    this.lastName = lastName
-    this.firstName = firstName
+    this.lastName = lastName;
+    this.firstName = firstName;
   }
 
   getFullName () {
-    return this.lastName + ' ' + this.firstName
+    return this.lastName + ' ' + this.firstName;
 
   };
 
-  
 }
 
 const character = new Character('va#$4ya r$%^ogov');
 character.setAge(35);
-character.setFullName;
+character.setFullName();
 
- console.log ( character.getFullName(), character.isAdult())
+console.log (character.getFullName(), character.isAdult());
 
 // console.log(character.name, character.birthYear, character.getAge(), character.isAdult(), character.setFullName());
-

@@ -1,7 +1,9 @@
 
-Ну и чисто теоретические "задачки", их больше на синтаксис массивов, объектов, строк. 
+// Ну и чисто теоретические "задачки", их больше на синтаксис массивов, объектов, строк. 
 
-1. У тебя есть массив "людей" тебе надо вернуть одно число - разницу между самым взрослым и самым молодым
+const { each } = require("lodash")
+
+// 1. У тебя есть массив "людей" тебе надо вернуть одно число - разницу между самым взрослым и самым молодым
 
 const input = [  {    name: "John",
     age: 13,
@@ -17,7 +19,7 @@ const output = bigesstNumber[0].age - bigesstNumber[1].age
 console.log (output)
 
 
-2. У тебя есть массив букв, надо посчитать каждую букву и вывести объект формата
+// 2. У тебя есть массив букв, надо посчитать каждую букву и вывести объект формата
 
 
 const input = ["a", "c", "a", "d"]
@@ -80,7 +82,26 @@ console.log (obj)
 // > Вова Кромм:
 // 5. У тебя есть массив продуктов с категориями:
 
-const products = [   { name: "Product 1", price: 20, category: "Electronics" },
+//Получаешь массив чисел и надо вернуть сумму всех положительных чисел. Например:
+const input = [1, -4, 12, 0, -3, 29, -150];
+let sum = 0;
+for (let i=0;i<input.length;i++) {
+  if (input[i]>0) {
+    sum = sum + input[i]
+  }
+}
+console.log(sum)
+
+const input = [1, -4, 12, 0, -3, 29, -150];
+const sum = input.reduce((acc, item) => item > 0 ? acc + item : acc)
+console.log ( sum )
+
+
+
+
+
+const products = [   
+  { name: "Product 1", price: 20, category: "Electronics" },
   { name: "Product 2", price: 30, category: "Clothes" },
   { name: "Product 3", price: 40, category: "Electronics" },
   { name: "Product 4", price: 50, category: "Clothes" },
@@ -89,22 +110,42 @@ const products = [   { name: "Product 1", price: 20, category: "Electronics" },
   { name: "Product 7", price: 80, category: "Clothes" },
   { name: "Product 8", price: 90, category: "Electronics" },
 ];
-const names = {}
-for (let i = 0; i < products[i].category.length; i++)
-{
-  console.log (products[i].category)
+const count = {}
+for (let i = 0; i < products.length; i++) {
+; 
+    count[products[i].category] = (count[products[i].category] ?? 0) + 1; 
+  }
+console.log(count)
+const totalPrice = {};
+for (let i = 0; i < products.length; i++) {
+  const { category, price } = products[i];
+  if (!totalPrice[category]) {
+    totalPrice[category] = 0;
+  }
+  totalPrice[category] += price;
 }
+console.log(totalPrice);
+
+const averagePrice = {};
+for (const category in totalPrice) {
+  averagePrice[category] = totalPrice[category] / count[category];
+}
+console.log (averagePrice)
 Тебе надо:
 Вывести объект где ключ - название категории а значение количество товаров в категорииВ
 ывести объект где ключ- название категории а значение - средняя цена
 Вывести список всех категорий
 
-> Вова Кромм:
-Задачки из моего загашника. Они чуточку посложнее, чем были до этого, но тут может быть до 100 строчек кода, которые было бы интересно обсудить и посмотреть
+// Есть объект с названием товара как ключ и ценой как значение. Нужно увеличить все цены в 2 раза.
 
-> Вова Кромм:
-Короче 3 части (как и в прошлый раз)
+// JavaScript
 
-1. Проект (изменение урлов)
-2. Геттеры-сеттеры (добить)
-3. Теоретические задачки.
+const goods = {
+  meet: 100,
+  milk: 50
+}
+function doublePrice(goods){
+  for each 
+
+}
+// return {meet: 200, milk: 100}

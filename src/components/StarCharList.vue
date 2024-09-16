@@ -109,20 +109,22 @@ export default {
       this.currentPage = API_FIRST_PAGE;
     },
     updateUrl() {
-    this.$router.push({
-      name: 'Home',
-      replace: true,
-      query: {
-        search: this.searchQuery,
-        page: this.currentPage,
-        limit: this.charsPerPage
-      }
-    });
-  },
+      this.$router.push({
+        name: 'Home',
+        replace: true,
+        query: {
+          search: this.searchQuery,
+          page: this.currentPage,
+          limit: this.charsPerPage
+        }
+      });
+    },
     async onSearch() {
       this.updateUrl();
       this.currentPage = API_FIRST_PAGE;
-      const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, this.searchQuery);
+      const { characters, totalCharacters } = await this.fetchCharacters(
+        this.currentPage, this.searchQuery
+      );
       this.setCharacters(characters);
       this.setTotalCharacters(totalCharacters);
     }
