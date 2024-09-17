@@ -50,9 +50,9 @@ export default {
       isLoading: false,
       error: '',
       searchDebounce: undefined,
-      currentPage: API_FIRST_PAGE,
-      charsPerPage: API_CHARS_PER_PAGE,
-      searchQuery: ''
+      searchQuery: this.$route?.query?.search ?? '',
+      currentPage: Number(this.$route?.query?.page ?? API_FIRST_PAGE),
+      charsPerPage : Number(this.$route?.query?.limit ?? API_CHARS_PER_PAGE)
     };
   },
   computed: {
@@ -83,17 +83,16 @@ export default {
     }
   },
   async mounted() {
-    const searchQuery = this.$route?.query?.search ?? '';
-    const currentPage = this.$route?.query?.page ?? API_FIRST_PAGE;
-    const charsPerPage = this.$route?.query?.limit ?? API_CHARS_PER_PAGE;
-    this.searchQuery = searchQuery;
-    this.currentPage = currentPage;
-    this.charsPerPage = charsPerPage;
+    // const searchQuery = this.$route?.query?.search ?? '';
+    // const currentPage = Number(this.$route?.query?.page ?? API_FIRST_PAGE);
+    // const charsPerPage = Number(this.$route?.query?.limit ?? API_CHARS_PER_PAGE);
+    // this.searchQuery = searchQuery;
+    // this.currentPage = currentPage;
+    // this.charsPerPage = charsPerPage;
 
-    console.log ('i am mounted', searchQuery);
     try {
       await this.checkCharactersPerPageLimit(
-        this.currentPage, this.charsPerPage, searchQuery);
+        this.currentPage, this.charsPerPage, this.searchQuery);
     } catch (error) {
       this.error = 'XXX - Error';
     }
