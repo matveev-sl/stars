@@ -83,6 +83,7 @@ export default {
     }
   },
   async mounted() {
+    countVisits()
     // const searchQuery = this.$route?.query?.search ?? '';
     // const currentPage = Number(this.$route?.query?.page ?? API_FIRST_PAGE);
     // const charsPerPage = Number(this.$route?.query?.limit ?? API_CHARS_PER_PAGE);
@@ -132,7 +133,17 @@ export default {
       const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, this.searchQuery);
       this.setCharacters(characters);
       this.setTotalCharacters(totalCharacters);
-    }
+    },
+    countVisits() {
+     let visits = localStorage.getItem('visitCount');
+     if (visits == undefined) {
+       visits = 1;
+     } else {
+       visits = parseInt(visits) + 1;
+     }
+     localStorage.setItem('visitCount', visits);
+     alert(`Вы посетили этот сайт ${visits} раз.`);
+   }
   }
 };
 </script>
