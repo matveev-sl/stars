@@ -7,13 +7,13 @@ export class Character {
   }
   static filterName (value) {
     const filter = /[^a-zа-яё\s]+/gi;
-    value = value.replace(filter, '').toLowerCase(); 
+    value = value.replace(filter, '').toLowerCase();
     if (value.length === 0) {
       return '';
     }
     value = value[0].toUpperCase() + value.slice(1);
-    
-    return value
+
+    return value;
   }
 
   setAge(value) {
@@ -33,24 +33,19 @@ export class Character {
     }
     let lastName = value.split(' ')[1];
     let firstName = value.split(' ')[0] ?? '';
-    this.lastName = lastName
-    this.firstName = firstName
+    this.lastName = Character.filterName(lastName);
+    this.firstName = Character.filterName(firstName);
   }
-  
 
   getFullName () {
-    return this.lastName + ' ' + this.firstName
-
+    return this.lastName + ' ' + this.firstName;
   };
-
-  
 }
 
 const character = new Character('va#$4ya r$%^ogov');
 character.setAge(35);
-character.setFullName(character.name);
+character.setFullName('Straße xx');
 
- console.log ( character.getFullName(), character.isAdult())
+console.log (character.getFullName(), character.isAdult(), character.getAge());
 
 // console.log(character.name, character.birthYear, character.getAge(), character.isAdult(), character.setFullName());
-

@@ -89,6 +89,7 @@ export default {
     const currentPage = this.$route?.query?.page ?? API_FIRST_PAGE;
     const charsPerPage = this.$route?.query?.limit ?? API_CHARS_PER_PAGE;
     this.searchQuery = searchQuery;
+    // todo: handle erros, when currentPage = "not-number-string"
     this.currentPage = Number(currentPage);
     this.charsPerPage = Number(charsPerPage);
 
