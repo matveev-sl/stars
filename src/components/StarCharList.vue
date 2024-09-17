@@ -83,13 +83,11 @@ export default {
     }
   },
   async mounted() {
+    this.countVisits()
     // const searchQuery = this.$route?.query?.search ?? '';
-    // const currentPage = Number(this.$route?.query?.page ?? API_FIRST_PAGE);
-    // const charsPerPage = Number(this.$route?.query?.limit ?? API_CHARS_PER_PAGE);
     // this.searchQuery = searchQuery;
-    // this.currentPage = currentPage;
-    // this.charsPerPage = charsPerPage;
-
+    // console.log ('i am mounted', searchQuery);
+    // todo: handle erros, when currentPage = "not-number-string"
     try {
       await this.checkCharactersPerPageLimit(
         this.currentPage, this.charsPerPage, this.searchQuery);
@@ -110,9 +108,7 @@ export default {
       'setTotalCharacters'
     ]),
     onCharsPerPageChange() {
-      if (this.currentPage !== API_FIRST_PAGE) {
       this.currentPage = API_FIRST_PAGE;
-    }
     },
     updateUrl() {
     this.$router.push({
@@ -127,11 +123,20 @@ export default {
   },
     async onSearch() {
       this.updateUrl();
-      if (this.searchQuery !== this.$route.query.search) {
-      this.currentPage = API_FIRST_PAGE;}
+      this.currentPage = API_FIRST_PAGE;
       const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, this.searchQuery);
       this.setCharacters(characters);
       this.setTotalCharacters(totalCharacters);
+    },
+    countVisits() {
+      let visits = localStorage.getItem('visitCount');
+      if (visits == undefined) {
+        visits = 1;
+      } else {
+        visits = ++visits;
+      }
+      localStorage.setItem('visitCount', visits);
+      alert(`Вы посетили этот сайт ${visits} раз.`);
     }
   }
 };
@@ -139,4 +144,3 @@ export default {
 
 <style scoped>
 </style>
-//
