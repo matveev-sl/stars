@@ -4,7 +4,6 @@
       v-model="searchQuery"
       label="Search"
       class="mt-4"
-      @update:model-value="onSearchChange"
     ></v-text-field>
     <div v-if="error">{{ error }}</div>
     <div v-else-if="isLoading">Загружается...</div>
@@ -29,7 +28,6 @@
       v-model="currentPage"
       :length="mountPages"
       class="my-4"
-      @update:model-value="onPageChange"
     ></v-pagination>
   </v-container>
 </template>
@@ -67,33 +65,32 @@ export default {
     ...mapState(useCharactersStore, [ 'characters', 'totalCharacters' ])
   },
   watch: {
-    // async currentPage(newVal) {
-    //   this.updateUrl();
-    //   await this.checkCharactersPerPageLimit(newVal, this.charsPerPage, this.searchQuery);
-    // },
-    // async charsPerPage(newVal) {
-    //   this.updateUrl();
-    //   await this.checkCharactersPerPageLimit(this.currentPage, newVal, this.searchQuery);
-    // },
-    // searchQuery() {
-    //   if (this.searchDebounce) {
-    //     clearTimeout(this.searchDebounce);
-    //   }
-    //   this.searchDebounce = setTimeout(() => {
-    //     this.onSearch();
-    //   }, 1000);
-    // }
+    async currentPage(newVal) {
+      this.updateUrl();
+      await this.checkCharactersPerPageLimit(newVal, this.charsPerPage, this.searchQuery);
+    },
+    async charsPerPage(newVal) {
+      this.updateUrl();
+      await this.checkCharactersPerPageLimit(this.currentPage, newVal, this.searchQuery);
+    },
+    searchQuery() {
+      if (this.searchDebounce) {
+        clearTimeout(this.searchDebounce);
+      }
+      this.searchDebounce = setTimeout(() => {
+        this.onSearch();
+      }, 1000);
+    }
   },
   async mounted() {
     const searchQuery = this.$route?.query?.search ?? '';
     const currentPage = this.$route?.query?.page ?? API_FIRST_PAGE;
     const charsPerPage = this.$route?.query?.limit ?? API_CHARS_PER_PAGE;
     this.searchQuery = searchQuery;
-    // todo: handle erros, when currentPage = "not-number-string"
-    this.currentPage = Number(currentPage);
-    this.charsPerPage = Number(charsPerPage);
+    this.currentPage = currentPage;
+    this.charsPerPage = charsPerPage;
 
-    console.log ('i am mounted', searchQuery, currentPage, typeof currentPage, charsPerPage, typeof charsPerPage);
+    console.log ('i am mounted', searchQuery);
     try {
       await this.checkCharactersPerPageLimit(
         this.currentPage, this.charsPerPage, searchQuery);
@@ -113,37 +110,26 @@ export default {
       'checkCharactersPerPageLimit',
       'setTotalCharacters'
     ]),
-    async onCharsPerPageChange(value) {
+    onCharsPerPageChange() {
+      if (this.currentPage !== API_FIRST_PAGE) {
       this.currentPage = API_FIRST_PAGE;
-      this.updateUrl();
-      await this.checkCharactersPerPageLimit(this.currentPage, value, this.searchQuery);
-    },
-    async onPageChange(value) {
-      this.updateUrl();
-      await this.checkCharactersPerPageLimit(value, this.charsPerPage, this.searchQuery);
+    }
     },
     updateUrl() {
-      this.$router.push({
-        name: 'Home',
-        replace: true,
-        query: {
-          search: this.searchQuery,
-          page: this.currentPage,
-          limit: this.charsPerPage
-        }
-      });
-    },
-    onSearchChange() {
-      if (this.searchDebounce) {
-        clearTimeout(this.searchDebounce);
+    this.$router.push({
+      name: 'Home',
+      replace: true,
+      query: {
+        search: this.searchQuery,
+        page: this.currentPage,
+        limit: this.charsPerPage
       }
-      this.searchDebounce = setTimeout(() => {
-        this.handleSearch();
-      }, 1000);
-    },
-    async handleSearch() {
-      this.currentPage = API_FIRST_PAGE;
+    });
+  },
+    async onSearch() {
       this.updateUrl();
+      if (this.searchQuery !== this.$route.query.search) {
+      this.currentPage = API_FIRST_PAGE;}
       const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, this.searchQuery);
       this.setCharacters(characters);
       this.setTotalCharacters(totalCharacters);
