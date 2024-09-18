@@ -142,8 +142,57 @@ console.log (averagePrice)
 const goods = {
   meet: 100,
   milk: 50
-}
-function doublePrice(goods){
-  for each 
+};
 
+Object.keys(goods).forEach(key => {
+  goods[key] *= 2;
+});
+
+console.log(goods);
+
+// б. у тебя осталось еще 2 задачки с прошлого раза. 
+// в. ```Есть вложенный объект, где у людей есть зарплата. Нужно увеличить всем зарплату в два раза (если она есть), а если нет, то сделать ее 100.
+// JavaScript
+
+const obj = {   manager: {name: "Vasya", salary: 40},
+   designer: {name: "Olesya", salary: 40},
+   developer: {name: "Petya"}
 }
+Object.keys(obj).forEach(key => {
+  obj[key].salary !== undefined ? obj[key].salary * 2 : obj[key].salary = 100
+}
+)
+console.log (obj)
+
+// г. У тебя есть массив товаров. Надо из этого массива создать "массив массивов", те просто массив в котором каждый элемент это массив точно таких же товаров, но одной категории. 
+
+
+// JavaScript
+
+const exampleArray = [
+  { id: 1, category: 'fruit', name: 'Apple' },
+  { id: 2, category: 'fruit', name: 'Banana' },
+  { id: 3, category: 'vegetable', name: 'Carrot' },
+  { id: 4, category: 'vegetable', name: 'Broccoli' }
+];
+
+const output = Object.values(exampleArray.reduce((acc, item) => {
+  if (acc[item.category] == undefined) {
+    acc[item.category] = [];
+  }
+
+  acc[item.category].push(item);
+  return acc
+}, {}));
+console.log (output)
+
+const output = [
+  [
+    { id: 1, category: 'fruit', name: 'Apple' },
+    { id: 2, category: 'fruit', name: 'Banana' },
+  ],
+  [
+    { id: 3, category: 'vegetable', name: 'Carrot' },
+    { id: 4, category: 'vegetable', name: 'Broccoli' }
+  ],
+];
