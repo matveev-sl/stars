@@ -56,6 +56,7 @@ export default {
     };
   },
   computed: {
+
     currentCharacters() {
       return this.getCurrentCharacters(this.currentPage, this.charsPerPage);
     },
@@ -83,14 +84,15 @@ export default {
     }
   },
   async mounted() {
-    countVisits()
+   this.countVisits()
     // const searchQuery = this.$route?.query?.search ?? '';
     // const currentPage = Number(this.$route?.query?.page ?? API_FIRST_PAGE);
     // const charsPerPage = Number(this.$route?.query?.limit ?? API_CHARS_PER_PAGE);
     // this.searchQuery = searchQuery;
     // this.currentPage = currentPage;
     // this.charsPerPage = charsPerPage;
-
+    this.correctUrl (this.currentPage);
+    this.correctUrl (this.charsPerPage);
     try {
       await this.checkCharactersPerPageLimit(
         this.currentPage, this.charsPerPage, this.searchQuery);
@@ -126,6 +128,14 @@ export default {
       }
     });
   },
+    correctUrl (value) {
+  if (isNaN(value)) {
+    this.error = 'URL не должен содержать символы'
+    // alert('URL не должен содержать символы');
+    return null; 
+  }
+  return value; 
+},
     async onSearch() {
       this.updateUrl();
       if (this.searchQuery !== this.$route.query.search) {
