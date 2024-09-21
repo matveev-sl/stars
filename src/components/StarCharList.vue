@@ -50,12 +50,13 @@ export default {
       isLoading: false,
       error: '',
       searchDebounce: undefined,
-      currentPage: API_FIRST_PAGE,
-      charsPerPage: API_CHARS_PER_PAGE,
-      searchQuery: ''
+      searchQuery: this.$route?.query?.search ?? '',
+      currentPage: Number(this.$route?.query?.page ?? API_FIRST_PAGE),
+      charsPerPage : Number(this.$route?.query?.limit ?? API_CHARS_PER_PAGE)
     };
   },
   computed: {
+
     currentCharacters() {
       return this.getCurrentCharacters(this.currentPage, this.charsPerPage);
     },
@@ -83,12 +84,18 @@ export default {
     }
   },
   async mounted() {
-    const searchQuery = this.$route?.query?.search ?? '';
+   this.countVisits()
+    // const searchQuery = this.$route?.query?.search ?? '';
+    // const currentPage = Number(this.$route?.query?.page ?? API_FIRST_PAGE);
+    // const charsPerPage = Number(this.$route?.query?.limit ?? API_CHARS_PER_PAGE);
     // this.searchQuery = searchQuery;
-    console.log ('i am mounted', searchQuery);
+    // this.currentPage = currentPage;
+    // this.charsPerPage = charsPerPage;
+    this.correctUrl (this.currentPage);
+    this.correctUrl (this.charsPerPage);
     try {
       await this.checkCharactersPerPageLimit(
-        this.currentPage, this.charsPerPage, searchQuery);
+        this.currentPage, this.charsPerPage, this.searchQuery);
     } catch (error) {
       this.error = 'XXX - Error';
     }
@@ -106,7 +113,9 @@ export default {
       'setTotalCharacters'
     ]),
     onCharsPerPageChange() {
+      if (this.currentPage !== API_FIRST_PAGE) {
       this.currentPage = API_FIRST_PAGE;
+    }
     },
     updateUrl() {
       this.$router.push({
@@ -119,18 +128,46 @@ export default {
         }
       });
     },
+    this.$router.push({
+      name: 'Home',
+      replace: true,
+      query: {
+        search: this.searchQuery,
+        page: this.currentPage,
+        limit: this.charsPerPage
+      }
+    });
+  },
+  correctUrl (value) {
+    if (isNaN(value)) {
+    this.charsPerPage = 1
+    // this.error = 'URL не должен содержать символы'
+    // alert('URL не должен содержать символы');
+  }
+  return value; 
+},
     async onSearch() {
       this.updateUrl();
-      this.currentPage = API_FIRST_PAGE;
-      const { characters, totalCharacters } = await this.fetchCharacters(
-        this.currentPage, this.searchQuery
-      );
+      if (this.searchQuery !== this.$route.query.search) {
+      this.currentPage = API_FIRST_PAGE;}
+      const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, this.searchQuery);
       this.setCharacters(characters);
       this.setTotalCharacters(totalCharacters);
-    }
+    },
+    countVisits() {
+     let visits = localStorage.getItem('visitCount');
+     if (visits == undefined) {
+       visits = 1;
+     } else {
+       visits = parseInt(visits) + 1;
+     }
+     localStorage.setItem('visitCount', visits);
+     alert(`Вы посетили этот сайт ${visits} раз.`);
+   }
   }
 };
 </script>
 
 <style scoped>
 </style>
+//

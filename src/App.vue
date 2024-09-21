@@ -9,7 +9,7 @@
 </template>
 
 <script>
-
+//unmounted - ??
 import StarCharList from './components/StarCharList.vue';
 export default {
   name: 'App',
