@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia';
 import { characterMap } from '@/mapping.js';
-
-const API_FIRST_PAGE = 1;
-const API_CHARS_PER_PAGE = 10; // Добавляем эту переменную
+import { API_CHARS_PER_PAGE, API_FIRST_PAGE } from '../../config';
 
 const TOTAL_CHARS_FALLBACK_VALUE = 100;
 export const useCharactersStore = defineStore('characters', {
