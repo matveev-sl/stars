@@ -154,15 +154,28 @@ console.log(goods);
 // в. ```Есть вложенный объект, где у людей есть зарплата. Нужно увеличить всем зарплату в два раза (если она есть), а если нет, то сделать ее 100.
 // JavaScript
 
-const obj = {   manager: {name: "Vasya", salary: 40},
+const obj = {   
+   manager: {name: "Vasya", salary: 40},
    designer: {name: "Olesya", salary: 40},
    developer: {name: "Petya"}
 }
-Object.keys(obj).forEach(key => {
-  obj[key].salary !== undefined ? obj[key].salary * 2 : obj[key].salary = 100
+const output = Object.keys(obj).(key => {
+ obj[key].salary !== undefined ? obj[key].salary * 2 : obj[key].salary = 100
 }
 )
-console.log (obj)
+console.log (output)
+
+
+const obj = {   
+  manager: {name: "Vasya", salary: 40},
+  designer: {name: "Olesya", salary: 40},
+  developer: {name: "Petya"}
+}
+
+Object.entries(obj).forEach(([position, payload]) => {
+  const {salary, name} = payload
+  const salary1 = payload.salary 
+})
 
 // г. У тебя есть массив товаров. Надо из этого массива создать "массив массивов", те просто массив в котором каждый элемент это массив точно таких же товаров, но одной категории. 
 
@@ -176,15 +189,28 @@ const exampleArray = [
   { id: 4, category: 'vegetable', name: 'Broccoli' }
 ];
 
-const output = Object.values(exampleArray.reduce((acc, item) => {
-  if (acc[item.category] == undefined) {
-    acc[item.category] = [];
-  }
 
-  acc[item.category].push(item);
+
+
+
+const output = Object.values(exampleArray.reduce((acc, item) => {
+  const {category} = item
+  const currentItems = acc[category] ?? []
+  return {...acc, [category]:[...currentItems, item]}
+
+  if (acc[category]) {
+    acc[category].push(item)
+    return acc
+  } 
+  acc[category] = [];
   return acc
 }, {}));
 console.log (output)
+
+
+
+
+
 
 const output = [
   [

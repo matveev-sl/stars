@@ -128,11 +128,11 @@ export default {
       }
     });
   },
-    correctUrl (value) {
-  if (isNaN(value)) {
-    this.error = 'URL не должен содержать символы'
+  correctUrl (value) {
+    if (isNaN(value)) {
+    this.charsPerPage = 1
+    // this.error = 'URL не должен содержать символы'
     // alert('URL не должен содержать символы');
-    return null; 
   }
   return value; 
 },
