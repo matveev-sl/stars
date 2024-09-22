@@ -222,3 +222,39 @@ const output = [
     { id: 4, category: 'vegetable', name: 'Broccoli' }
   ],
 ];
+
+
+
+
+// Есть два массива людей в одном хранится айди человека и его имя, в другом хранится айди человека и его отдел. Нужно создать один массив где про человека известно и имя и отдел
+
+// JavaScript
+
+const employees = [
+  { id: 1, name: "John" },
+  { id: 2, name: "Jane" }
+];
+const departments = [
+  { id: 1, department: "Sales" },
+  { id: 2, department: "Marketing" }
+];
+const newArr = employees.map(employee => ({ ...employee }));
+newArr.map (item => {
+  for (let j = 0; j < departments.length; j++) {
+        if (item.id === departments[j].id) {
+          item.department = departments[j].department;
+      }
+    }
+})
+console.log (newArr)
+
+
+
+// for (let i = 0; i < newArr.length; i++) {
+//   for (let j = 0; j < departments.length; j++) {
+//     if (newArr[i].id === departments[j].id) {
+//       newArr[i].department = departments[j].department;
+//   }
+// }
+console.log (newArr)
+
