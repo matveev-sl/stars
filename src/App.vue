@@ -10,6 +10,7 @@
 
 <script>
 import StarCharList from './components/StarCharList.vue';
+import { useCharactersStore } from '@/store/charactes.js';
 
 export default {
   name: 'App',
@@ -18,14 +19,18 @@ export default {
   },
   data() {
     return {
-      visitCount: 0
-    };
+      visitCount: 0,
+    }
   },
   mounted() {
     this.countVisits();
+    // const charactersStore = useCharactersStore();
+    // charactersStore.loadCharacters(); 
   },
   beforeUnmount() {
     localStorage.setItem('visitCount', this.visitCount);
+    localStorage.setItem('likedId', this.likedId)
+
   },
   methods: {
     countVisits() {

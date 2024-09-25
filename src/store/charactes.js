@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia';
 import { characterMap } from '@/mapping.js';
-import { API_CHARS_PER_PAGE, API_FIRST_PAGE } from '../../config';
+import { API_CHARS_PER_PAGE, API_FIRST_PAGE, BASE_API_URL } from '../../config';
 
 const TOTAL_CHARS_FALLBACK_VALUE = 100;
 export const useCharactersStore = defineStore('characters', {
   state: () => ({
     characters: [],
-    totalCharacters: TOTAL_CHARS_FALLBACK_VALUE
+    totalCharacters: TOTAL_CHARS_FALLBACK_VALUE,
+    // likedIds: JSON.parse(localStorage.getItem('likedIds')) || []
+    likedIds: this.characters
   }),
   getters: {
     // getUserById: (state) => {
@@ -32,12 +34,21 @@ export const useCharactersStore = defineStore('characters', {
       return this.characters.slice(startIdx, startIdx + charsPerPage);
     },
     onLike(id) {
+      // const isLiked = this.likedIds.includes(id);
+      // if (isLiked) {
+      //   this.likedIds = this.likedIds.filter(likedId => likedId !== id);
+      // } else {
+      //   this.likedIds.push(id);
+      // }
+      // localStorage.setItem('likedIds', JSON.stringify(this.likedIds));
+
+      
       this.characters = this.characters.map((char) =>
         char.id === id ? { ...char, isLiked: !char.isLiked } : char
       );
     },
     async fetchCharacters(page, search = '') {
-      let url = `https://swapi.dev/api/people/?page=${page}&format=json`;
+      let url = `${BASE_API_URL}people/?page=${page}&format=json`;
       if (search.length > 0) {
         url += `&search=${search}`;
       }
