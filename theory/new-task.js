@@ -1,16 +1,13 @@
 // Ну и чисто теоретические "задачки", их больше на синтаксис массивов, объектов, строк. 
-
-const { each } = require("lodash")
-
 // 1. У тебя есть массив "людей" тебе надо вернуть одно число - разницу между самым взрослым и самым молодым
 
 const input = [  {    name: "John",
-    age: 13,
-  },
-  {
-    name: "Mark",
-    age: 56,
-  }]
+  age: 13,
+},
+{
+  name: "Mark",
+  age: 56,
+}]
 
 
 const bigesstNumber = input.sort((a, b) => b.age - a.age)
@@ -25,37 +22,45 @@ const input = ["a", "c", "a", "d"]
 const letterCount = {};
 
 input.forEach(letter => {
-  letterCount[letter] = (letterCount[letter] || 0) + 1;
+letterCount[letter] = (letterCount[letter] || 0) + 1;
 });
 const result = Object.keys(letterCount).map(letter => {
-  return { Буква: letter, Счет: letterCount[letter] };
+return { Буква: letter, Счет: letterCount[letter] };
 });
 console.log(result);
 
 // 3. У тебя есть массив студентов
 
-const students = [   { name: "Alice", scores: [90, 85, 97]},
-  { name: "Bob", scores: [75, 80] },
+const students = [
+{ name: "Alice", scores: [90, 85, 97] },
+{ name: "Bob", scores: [75, 80] },
 ];
-for (let i = 0; i < students.length; i++) {
-students[i].scores.sort((a, b) => b - a)
-let sum = {}
-  sum = students[i].scores.reduce((acc, curr) => (acc + curr), 0);
-  let average = sum/students[i].scores.length
-  console.log (students[i].name + " средний бал " + average)
-  let goodStudents = ''
-  if (average > 90) {
-    console.log (students[i].name + " хороший студент")
-  }
 
+for (let i = 0; i < students.length; i++) {
+students[i].scores.sort((a, b) => b - a);
+let sum = students[i].scores.reduce((acc, curr) => acc + curr, 0);
+let average = sum / students[i].scores.length;
+students[i].average = average;
+console.log(students[i].name + " средний балл " + average);
 }
-let bestStudent = ''
-if (students[0].scores[0]>students[1].scores[0]) {
-  bestStudent = students[0].name
+
+let bestStudent = students[0];
+
+for (let i = 1; i < students.length; i++) {
+if (students[i].average > bestStudent.average) {
+  bestStudent = students[i];
 }
-else 
-bestStudent = students[1].name
-console.log ("Лучий студент " + bestStudent)
+}
+
+console.log("Лучший студент: ", bestStudent.name, "с средним баллом:", bestStudent.average);
+
+
+// if (students[0].scores[0]>students[1].scores[0]) {
+//   bestStudent = students[0].name
+// }
+// else 
+// bestStudent = students[1].name
+// console.log ("Лучий студент " + bestStudent)
 
 
 
@@ -85,9 +90,9 @@ console.log (obj)
 const input = [1, -4, 12, 0, -3, 29, -150];
 let sum = 0;
 for (let i=0;i<input.length;i++) {
-  if (input[i]>0) {
-    sum = sum + input[i]
-  }
+if (input[i]>0) {
+  sum = sum + input[i]
+}
 }
 console.log(sum)
 
@@ -100,34 +105,34 @@ console.log ( sum )
 
 
 const products = [   
-  { name: "Product 1", price: 20, category: "Electronics" },
-  { name: "Product 2", price: 30, category: "Clothes" },
-  { name: "Product 3", price: 40, category: "Electronics" },
-  { name: "Product 4", price: 50, category: "Clothes" },
-  { name: "Product 5", price: 60, category: "Clothes" },
-  { name: "Product 6", price: 70, category: "Electronics" },
-  { name: "Product 7", price: 80, category: "Clothes" },
-  { name: "Product 8", price: 90, category: "Electronics" },
+{ name: "Product 1", price: 20, category: "Electronics" },
+{ name: "Product 2", price: 30, category: "Clothes" },
+{ name: "Product 3", price: 40, category: "Electronics" },
+{ name: "Product 4", price: 50, category: "Clothes" },
+{ name: "Product 5", price: 60, category: "Clothes" },
+{ name: "Product 6", price: 70, category: "Electronics" },
+{ name: "Product 7", price: 80, category: "Clothes" },
+{ name: "Product 8", price: 90, category: "Electronics" },
 ];
 const count = {}
 for (let i = 0; i < products.length; i++) {
 ; 
-    count[products[i].category] = (count[products[i].category] ?? 0) + 1; 
-  }
+  count[products[i].category] = (count[products[i].category] ?? 0) + 1; 
+}
 console.log(count)
 const totalPrice = {};
 for (let i = 0; i < products.length; i++) {
-  const { category, price } = products[i];
-  if (!totalPrice[category]) 
-    totalPrice[category] = 0;
-  }
-  totalPrice[category] += price;
+const { category, price } = products[i];
+if (!totalPrice[category]) 
+  totalPrice[category] = 0;
+}
+totalPrice[category] += price;
 }
 console.log(totalPrice);
 
 const averagePrice = {};
 for (const category in totalPrice) {
-  averagePrice[category] = totalPrice[category] / count[category];
+averagePrice[category] = totalPrice[category] / count[category];
 }
 console.log (averagePrice)
 Тебе надо:
@@ -140,12 +145,12 @@ console.log (averagePrice)
 // JavaScript
 
 const goods = {
-  meet: 100,
-  milk: 50
+meet: 100,
+milk: 50
 };
 
 Object.keys(goods).forEach(key => {
-  goods[key] *= 2;
+goods[key] *= 2;
 });
 
 console.log(goods);
@@ -155,26 +160,26 @@ console.log(goods);
 // JavaScript
 
 const obj = {   
-   manager: {name: "Vasya", salary: 40},
-   designer: {name: "Olesya", salary: 40},
-   developer: {name: "Petya"}
+ manager: {name: "Vasya", salary: 40},
+ designer: {name: "Olesya", salary: 40},
+ developer: {name: "Petya"}
 }
 const output = Object.keys(obj).(key => {
- obj[key].salary !== undefined ? obj[key].salary * 2 : obj[key].salary = 100
+obj[key].salary !== undefined ? obj[key].salary * 2 : obj[key].salary = 100
 }
 )
 console.log (output)
 
 
 const obj = {   
-  manager: {name: "Vasya", salary: 40},
-  designer: {name: "Olesya", salary: 40},
-  developer: {name: "Petya"}
+manager: {name: "Vasya", salary: 40},
+designer: {name: "Olesya", salary: 40},
+developer: {name: "Petya"}
 }
 
 Object.entries(obj).forEach(([position, payload]) => {
-  const {salary, name} = payload
-  const salary1 = payload.salary 
+const {salary, name} = payload
+const salary1 = payload.salary 
 })
 
 // г. У тебя есть массив товаров. Надо из этого массива создать "массив массивов", те просто массив в котором каждый элемент это массив точно таких же товаров, но одной категории. 
@@ -183,10 +188,10 @@ Object.entries(obj).forEach(([position, payload]) => {
 // JavaScript
 
 const exampleArray = [
-  { id: 1, category: 'fruit', name: 'Apple' },
-  { id: 2, category: 'fruit', name: 'Banana' },
-  { id: 3, category: 'vegetable', name: 'Carrot' },
-  { id: 4, category: 'vegetable', name: 'Broccoli' }
+{ id: 1, category: 'fruit', name: 'Apple' },
+{ id: 2, category: 'fruit', name: 'Banana' },
+{ id: 3, category: 'vegetable', name: 'Carrot' },
+{ id: 4, category: 'vegetable', name: 'Broccoli' }
 ];
 
 
@@ -194,16 +199,16 @@ const exampleArray = [
 
 
 const output = Object.values(exampleArray.reduce((acc, item) => {
-  const {category} = item
-  const currentItems = acc[category] ?? []
-  return {...acc, [category]:[...currentItems, item]}
+const {category} = item
+const currentItems = acc[category] ?? []
+return {...acc, [category]:[...currentItems, item]}
 
-  if (acc[category]) {
-    acc[category].push(item)
-    return acc
-  } 
-  acc[category] = [];
+if (acc[category]) {
+  acc[category].push(item)
   return acc
+} 
+acc[category] = [];
+return acc
 }, {}));
 console.log (output)
 
@@ -213,14 +218,14 @@ console.log (output)
 
 
 const output = [
-  [
-    { id: 1, category: 'fruit', name: 'Apple' },
-    { id: 2, category: 'fruit', name: 'Banana' },
-  ],
-  [
-    { id: 3, category: 'vegetable', name: 'Carrot' },
-    { id: 4, category: 'vegetable', name: 'Broccoli' }
-  ],
+[
+  { id: 1, category: 'fruit', name: 'Apple' },
+  { id: 2, category: 'fruit', name: 'Banana' },
+],
+[
+  { id: 3, category: 'vegetable', name: 'Carrot' },
+  { id: 4, category: 'vegetable', name: 'Broccoli' }
+],
 ];
 
 
@@ -231,20 +236,21 @@ const output = [
 // JavaScript
 
 const employees = [
-  { id: 1, name: "John" },
-  { id: 2, name: "Jane" }
+{ id: 1, name: "John" },
+{ id: 2, name: "Jane" }
 ];
 const departments = [
-  { id: 1, department: "Sales" },
-  { id: 2, department: "Marketing" }
+{ id: 1, department: "Sales" },
+{ id: 2, department: "Marketing" }
 ];
-const newArr = employees.map(employee => ({ ...employee }));
+const newArr = employees.map(item => ({ ...item }));
+console.log(newArr) // почему ниже получилось новый объект создать с помощью spread а тут не получилось
 newArr.map (item => {
-  for (let j = 0; j < departments.length; j++) {
-        if (item.id === departments[j].id) {
-          item.department = departments[j].department;
-      }
+for (let j = 0; j < departments.length; j++) {
+      if (item.id === departments[j].id) {
+        item.department = departments[j].department;
     }
+  }
 })
 console.log (newArr)
 
@@ -257,68 +263,31 @@ console.log (newArr)
 // console.log (newArr)
 
 
-
-
-
-Отличные задачи! Давайте разберем методы и подходы, которые вам понадобятся для их решения.
-
-1. Сортировка массива объектов по цене
-Для сортировки массива объектов можно использовать метод sort(), который встроен в JavaScript. Этот метод позволяет упорядочить элементы массива на месте.
-
-Теория:
-
-Метод sort() принимает в качестве аргумента функцию-сравнения, которая определяет порядок сортировки.
-Функция должна возвращать отрицательное значение, если первый аргумент меньше второго, положительное — если больше, и 0, если они равны.
-Пример:
-
-javascript
-Копировать код
 const products = [
-  { name: "Phone", price: 699 },
-  { name: "Laptop", price: 999 },
-  { name: "Tablet", price: 399 }
+{ name: "Phone", price: 699 },
+{ name: "Laptop", price: 999 },
+{ name: "Tablet", price: 399 }
 ];
-
-products.sort((a, b) => a.price - b.price);
+const newArray = [...products]
+newArray.sort((a, b) => a.price - b.price);
 
 console.log(products);
-2. Создание копии объекта с возможностью независимой мутации
-Для создания "глубокой" копии объекта можно использовать метод JSON.parse() и JSON.stringify(), однако он не подходит для объектов с методами или для сложных структур данных. Более надежный способ — использовать оператор расширения (...).
 
-Теория:
-
-Оператор расширения (...) создает поверхностную копию объекта. Если объект содержит вложенные объекты, они будут скопированы по ссылке, что может привести к мутациям исходного объекта.
-Для создания глубоких копий сложных объектов можно использовать библиотеки, такие как Lodash, или реализовать свою функцию.
-Пример:
-
-javascript
-Копировать код
 const company = {
-  name: "TechCorp",
-  employees: [
-    { name: "Alice", position: "Developer" },
-    { name: "Bob", position: "Manager" }
-  ],
-  location: "New York"
+name: "TechCorp",
+employees: [
+  { name: "Alice", position: "Developer" },
+  { name: "Bob", position: "Manager" }
+],
+location: "New York"
+};
+const new_company = {...company, 
+employees: [...company.employees]} //почему локэйшн нью йорк идет позже имплоиз?
+console.log (new_company.employees)
+function addNewEmploye (names, position) {
+new_company.employees.push({name : names, position : position})
 };
 
-// Создание поверхностной копии
-const new_company = {
-  ...company,
-  employees: [...company.employees] // Создание глубокой копии массива сотрудников
-};
-
-// Функция для добавления нового сотрудника
-function addEmployee(company, newEmployee) {
-  company.employees.push(newEmployee);
-}
-
-// Добавление нового сотрудника в new_company
-addEmployee(new_company, { name: "Charlie", position: "Designer" });
-
-console.log(new_company.employees); // Проверяем, что новый сотрудник добавлен
-console.log(company.employees); // Проверяем, что сотрудники company остались без изменений
-Резюме
-Для сортировки массива объектов используйте sort() с функцией-сравнения.
-Для создания копий объектов используйте оператор расширения и внимательно относитесь к вложенным структурам данных, чтобы избежать нежелательных мутаций.
-Если у вас есть дополнительные вопросы или хотите углубиться в конкретные темы, дайте знать!
+addNewEmploye ('Ivan', 'Designer')
+console.log(new_company)
+console.log(company)

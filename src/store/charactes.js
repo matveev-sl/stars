@@ -6,20 +6,19 @@ const TOTAL_CHARS_FALLBACK_VALUE = 100;
 export const useCharactersStore = defineStore('characters', {
   state: () => ({
     characters: [],
-    totalCharacters: TOTAL_CHARS_FALLBACK_VALUE,
-    // likedIds: JSON.parse(localStorage.getItem('likedIds')) || []
-    likedIds: this.characters
+    totalCharacters: TOTAL_CHARS_FALLBACK_VALUE
   }),
   getters: {
-    // getUserById: (state) => {
-    //   return (userId) => state.users.find((user) => user.id === userId)
-    // },
+
     getCharacterById: (state) => {
       function getter(charId) {
         const char = state.characters.find((char) => char.id === charId);
         return char;
       }
       return getter;
+    },
+    getLikedIds: (state) => {
+      return state.characters.filter(item => item.isLiked).map(item => item.id);
     }
   },
   actions: {
@@ -42,7 +41,6 @@ export const useCharactersStore = defineStore('characters', {
       // }
       // localStorage.setItem('likedIds', JSON.stringify(this.likedIds));
 
-      
       this.characters = this.characters.map((char) =>
         char.id === id ? { ...char, isLiked: !char.isLiked } : char
       );

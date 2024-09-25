@@ -20,7 +20,8 @@ export const parseId = (url) => {
   const idRegex = /.*people\/(\d+)/;
   const match = url.match(idRegex);
   if (match && match.length === 2) {
-    return match[1];
+    return parseInt(match[1]);
   }
   throw new Error('Id was not parsed');
 };
+console.log(parseInt('ghhj'));
