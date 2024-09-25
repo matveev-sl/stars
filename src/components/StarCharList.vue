@@ -36,9 +36,8 @@
 import CharacterCard from './CharacterCard.vue';
 import { mapActions, mapState } from 'pinia';
 import { useCharactersStore } from '@/store/charactes.js';
-
-const API_FIRST_PAGE = 1;
-const API_CHARS_PER_PAGE = 10;
+import { correctChar, correctPage } from '@/utils';
+import { API_CHARS_PER_PAGE, API_FIRST_PAGE } from '../../config';
 
 export default {
   name: 'StarCharList',
@@ -51,8 +50,8 @@ export default {
       error: '',
       searchDebounce: undefined,
       searchQuery: this.$route?.query?.search ?? '',
-      currentPage: Number(this.$route?.query?.page ?? API_FIRST_PAGE),
-      charsPerPage : Number(this.$route?.query?.limit ?? API_CHARS_PER_PAGE)
+      currentPage: correctPage(this.$route?.query?.page ?? API_FIRST_PAGE),
+      charsPerPage: correctChar(this.$route?.query?.limit ?? API_CHARS_PER_PAGE)
     };
   },
   computed: {
@@ -84,7 +83,7 @@ export default {
     }
   },
   async mounted() {
-   this.countVisits()
+    // this.countVisits();
     // const searchQuery = this.$route?.query?.search ?? '';
     // const currentPage = Number(this.$route?.query?.page ?? API_FIRST_PAGE);
     // const charsPerPage = Number(this.$route?.query?.limit ?? API_CHARS_PER_PAGE);
@@ -114,46 +113,46 @@ export default {
     ]),
     onCharsPerPageChange() {
       if (this.currentPage !== API_FIRST_PAGE) {
-      this.currentPage = API_FIRST_PAGE;
-    }
+        this.currentPage = API_FIRST_PAGE;
+      }
     },
     updateUrl() {
-    this.$router.push({
-      name: 'Home',
-      replace: true,
-      query: {
-        search: this.searchQuery,
-        page: this.currentPage,
-        limit: this.charsPerPage
+      this.$router.push({
+        name: 'Home',
+        replace: true,
+        query: {
+          search: this.searchQuery,
+          page: this.currentPage,
+          limit: this.charsPerPage
+        }
+      });
+    },
+    correctUrl (value) {
+      if (isNaN(value)) {
+        this.charsPerPage = 1;
+        // this.error = 'URL не должен содержать символы'
+        // alert('URL не должен содержать символы');
       }
-    });
-  },
-  correctUrl (value) {
-    if (isNaN(value)) {
-    this.charsPerPage = 1
-    // this.error = 'URL не должен содержать символы'
-    // alert('URL не должен содержать символы');
-  }
-  return value; 
-},
+      return value;
+    },
     async onSearch() {
       this.updateUrl();
       if (this.searchQuery !== this.$route.query.search) {
-      this.currentPage = API_FIRST_PAGE;}
+        this.currentPage = API_FIRST_PAGE;}
       const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, this.searchQuery);
       this.setCharacters(characters);
       this.setTotalCharacters(totalCharacters);
     },
     countVisits() {
-     let visits = localStorage.getItem('visitCount');
-     if (visits == undefined) {
-       visits = 1;
-     } else {
-       visits = parseInt(visits) + 1;
-     }
-     localStorage.setItem('visitCount', visits);
-     alert(`Вы посетили этот сайт ${visits} раз.`);
-   }
+      let visits = localStorage.getItem('visitCount');
+      if (visits == undefined) {
+        visits = 1;
+      } else {
+        visits = parseInt(visits) + 1;
+      }
+      localStorage.setItem('visitCount', visits);
+      alert(`Вы посетили этот сайт ${visits} раз.`);
+    }
   }
 };
 </script>
