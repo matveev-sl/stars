@@ -272,6 +272,7 @@ const newArray = [...products]
 newArray.sort((a, b) => a.price - b.price);
 
 console.log(products);
+console.log(products);
 
 const company = {
 name: "TechCorp",
