@@ -24,4 +24,3 @@ export const parseId = (url) => {
   }
   throw new Error('Id was not parsed');
 };
-console.log(parseInt('ghhj'));

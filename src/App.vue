@@ -30,27 +30,25 @@ export default {
     // }
   },
   mounted() {
-    // this.countVisits();
-    window.addEventListener('beforeunload', this.storeSave);
-
+    this.countVisits();
+    // const charactersStore = useCharactersStore();
+    // charactersStore.loadCharacters(); 
   },
   beforeUnmount() {
-  //   localStorage.setItem('visitCount', this.visitCount);
+    localStorage.setItem('visitCount', this.visitCount);
+    localStorage.setItem('likedId', this.characters)
 
   },
   methods: {
-    // countVisits() {
-    //   let visits = localStorage.getItem('visitCount');
-    //   if (visits === null) {
-    //     visits = 1;
-    //   } else {
-    //     visits = parseInt(visits) + 1;
-    //   }
-    //   this.visitCount = visits;
-    // },
-    storeSave() {
-      const ids = this.getLikedIds.join(',');
-      localStorage.setItem('IDS', ids);
+    countVisits() {
+      let visits = localStorage.getItem('visitCount');
+      if (visits === null) {
+        visits = 1;
+      } else {
+        visits = parseInt(visits) + 1;
+      }
+      localStorage.setItem('visitCount', visits);
+      this.visitCount = visits;
     }
   }
 };
