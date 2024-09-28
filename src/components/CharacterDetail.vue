@@ -23,7 +23,7 @@ export default {
   computed: {
     ...mapState(useCharactersStore, [ 'getCharacterById' ]),
     characterId () {
-      return this.$route.params.id;
+      return Number(this.$route.params.id);
     },
     character () {
       return this.getCharacterById(this.characterId);
