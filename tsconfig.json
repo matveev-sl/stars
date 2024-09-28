@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es6",             // Версия JavaScript, в которую будет компилироваться TypeScript
+    "module": "esnext",          // Модульная система
+    "strict": true,              // Включить строгие проверки типов
+    "esModuleInterop": true,     // Совместимость с CommonJS
+    "skipLibCheck": true,        // Пропуск проверки типов в библиотеках
+    "forceConsistentCasingInFileNames": true,  // Принудительное использование одинакового регистра в именах файлов
+    "moduleResolution": "node"   // Использовать node-style разрешение модулей
+  },
+  "include": ["src"],            // Директории, которые будут компилироваться
+  "exclude": ["node_modules"]    // Исключённые директории
+}

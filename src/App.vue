@@ -10,7 +10,7 @@
 
 <script>
 import StarCharList from './components/StarCharList.vue';
-import { useCharactersStore } from '@/store/charactes.js';
+import { useCharactersStore } from '@/store/charactes.ts';
 import { mapState } from 'pinia';
 
 export default {
@@ -32,11 +32,11 @@ export default {
   mounted() {
     this.countVisits();
     // const charactersStore = useCharactersStore();
-    // charactersStore.loadCharacters(); 
+    // charactersStore.loadCharacters();
   },
   beforeUnmount() {
     localStorage.setItem('visitCount', this.visitCount);
-    localStorage.setItem('likedId', this.characters)
+    localStorage.setItem('likedId', this.characters);
 
   },
   methods: {

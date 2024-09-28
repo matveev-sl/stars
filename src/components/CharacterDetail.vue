@@ -14,7 +14,7 @@
 
 <script>
 import { mapActions, mapState } from 'pinia';
-import { useCharactersStore } from '@/store/charactes.js';
+import { useCharactersStore } from '@/store/charactes.ts';
 export default {
   name: 'CharacterDetail',
   data() {

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { characterMap } from '@/mapping.js';
+import { characterMap } from '@/mapping.ts';
 import { API_CHARS_PER_PAGE, API_FIRST_PAGE, BASE_API_URL } from '../../config';
 
 const TOTAL_CHARS_FALLBACK_VALUE = 100;
