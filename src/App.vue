@@ -35,9 +35,7 @@ export default {
 
   },
   beforeUnmount() {
-    localStorage.setItem('visitCount', this.visitCount);
-    localStorage.setItem('likedId', this.characters);
-
+    //   localStorage.setItem('visitCount', this.visitCount);
   },
   methods: {
     // countVisits() {
