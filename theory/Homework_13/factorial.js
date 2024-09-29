@@ -8,4 +8,11 @@ function factorial (number) {
     } else {result = 1;}
   return result;
 }
-console.log(factorial(3))
+console.log(factorial(3));
+
+function factorial2 (number) {
+  if (number === 1) return 1;
+  return factorial2(number - 1) * number;
+}
+
+console.log(factorial2(10_000));
