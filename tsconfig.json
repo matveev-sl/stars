@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "target": "es6",             // Версия JavaScript, в которую будет компилироваться TypeScript
+    "types": ["vue"],
+    "lib": ["esnext", "dom"],
     "module": "esnext",          // Модульная система
     "strict": true,              // Включить строгие проверки типов
     "esModuleInterop": true,     // Совместимость с CommonJS
@@ -8,6 +10,11 @@
     "forceConsistentCasingInFileNames": true,  // Принудительное использование одинакового регистра в именах файлов
     "moduleResolution": "node"   // Использовать node-style разрешение модулей
   },
-  "include": ["src"],            // Директории, которые будут компилироваться
+  "include": ["src/**/*.ts", "src/**/*.vue"],            // Файлы, которые будут компилироваться
+  "sourceMap": true,
+  "baseUrl": ".",                  // Для удобных путей
+  "paths": {                       // Опциональные алиасы для путей
+    "@/*": ["src/*"]
+  },
   "exclude": ["node_modules"]    // Исключённые директории
 }

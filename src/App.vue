@@ -8,7 +8,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import StarCharList from './components/StarCharList.vue';
 import { useCharactersStore } from '@/store/charactes.ts';
 import { mapState } from 'pinia';
@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     countVisits() {
-      let visits = localStorage.getItem('visitCount');
+      let visits: string = localStorage.getItem('visitCount');
       if (visits === null) {
         visits = 1;
       } else {
