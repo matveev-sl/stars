@@ -1,20 +1,19 @@
 const UNKNOWN_VALUE = '-- неизвестно --';
 
-type Character = {
+export type Character = {
   name: string;
   height: string;
-  mass: string;
+  mass: string | number;
   isLiked: boolean;
   id: number;
-  age: number;
-  url: string;
+  age: number | string; // мы подчеркиваем, что в нашем дизайне что-то не так
 }
 
 export const characterMap = (apiCharacter: any): Character => {
   const height = isNaN(apiCharacter.height) ? UNKNOWN_VALUE : apiCharacter.height;
   const currentYear = new Date().getFullYear();
   return {
-    // name: apiCharacter.name ?? UNKNOWN_VALUE,
+    name: apiCharacter.name ?? UNKNOWN_VALUE,
     height: height,
     mass: isNaN(apiCharacter.mass) ? UNKNOWN_VALUE : Number(apiCharacter.mass),
     isLiked: false,

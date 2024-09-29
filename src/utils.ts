@@ -1,4 +1,4 @@
-import { API_CHARS_PER_PAGE, API_FIRST_PAGE } from '../config';
+import { API_CHARS_PER_PAGE, API_FIRST_PAGE } from './config';
 
 export function correctPage(url) {
   if (isNaN(parseInt(url))) {

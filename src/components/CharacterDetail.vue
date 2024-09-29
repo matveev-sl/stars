@@ -1,12 +1,12 @@
 <template>
     <v-container>
       <v-card>
-        <v-card-title>{{ character?.name }}</v-card-title>
+        <v-card-title>{{ character.name }}</v-card-title>
         <v-card-text>
-          <p>Height: {{ character?.height }}</p>
-          <p>Mass: {{ character?.mass }}</p>
-          <p>Age: {{ character?.age }}</p>
-          <v-btn @click="toggleLike">{{ character?.isLiked ? 'Liked' : 'Like' }}</v-btn>
+          <p>Height: {{ character.height }}</p>
+          <p>Mass: {{ character.mass }}</p>
+          <p>Age: {{ character.age }}</p>
+          <v-btn @click="toggleLike">{{ character.isLiked ? 'Liked' : 'Like' }}</v-btn>
         </v-card-text>
       </v-card>
     </v-container>
