@@ -8,13 +8,13 @@
     "esModuleInterop": true,     // Совместимость с CommonJS
     "skipLibCheck": true,        // Пропуск проверки типов в библиотеках
     "forceConsistentCasingInFileNames": true,  // Принудительное использование одинакового регистра в именах файлов
-    "moduleResolution": "node"   // Использовать node-style разрешение модулей
+    "moduleResolution": "node",   // Использовать node-style разрешение модулей
+    "baseUrl": ".",                  // Для удобных путей
+    "paths": {                       // Опциональные алиасы для путей
+      "@/*": ["src/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.vue"],            // Файлы, которые будут компилироваться
   "sourceMap": true,
-  "baseUrl": ".",                  // Для удобных путей
-  "paths": {                       // Опциональные алиасы для путей
-    "@/*": ["src/*"]
-  },
   "exclude": ["node_modules"]    // Исключённые директории
 }

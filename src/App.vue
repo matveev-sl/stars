@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     countVisits() {
-      let visits: string = localStorage.getItem('visitCount');
+      let visits = localStorage.getItem('visitCount');
       if (visits === null) {
         visits = 1;
       } else {
