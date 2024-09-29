@@ -30,9 +30,9 @@ export default {
     // }
   },
   mounted() {
-    this.countVisits();
-    // const charactersStore = useCharactersStore();
-    // charactersStore.loadCharacters();
+    // this.countVisits();
+    window.addEventListener('beforeunload', this.storeSave);
+
   },
   beforeUnmount() {
     localStorage.setItem('visitCount', this.visitCount);
@@ -40,15 +40,18 @@ export default {
 
   },
   methods: {
-    countVisits() {
-      let visits = localStorage.getItem('visitCount');
-      if (visits === null) {
-        visits = 1;
-      } else {
-        visits = parseInt(visits) + 1;
-      }
-      localStorage.setItem('visitCount', visits);
-      this.visitCount = visits;
+    // countVisits() {
+    //   let visits = localStorage.getItem('visitCount');
+    //   if (visits === null) {
+    //     visits = 1;
+    //   } else {
+    //     visits = parseInt(visits) + 1;
+    //   }
+    //   this.visitCount = visits;
+    // },
+    storeSave() {
+      const ids = this.getLikedIds.join(',');
+      localStorage.setItem('IDS', ids);
     }
   }
 };
