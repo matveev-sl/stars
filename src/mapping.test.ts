@@ -1,4 +1,4 @@
-import { parseId } from '@/mapping.js';
+import { parseId } from '@/mapping.ts';
 
 describe('Unit tests for pure parseId function', () => {
 

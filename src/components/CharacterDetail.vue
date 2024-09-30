@@ -14,7 +14,7 @@
 
 <script>
 import { mapActions, mapState } from 'pinia';
-import { useCharactersStore } from '@/store/charactes.js';
+import { useCharactersStore } from '@/store/charactes.ts';
 export default {
   name: 'CharacterDetail',
   data() {
@@ -23,7 +23,7 @@ export default {
   computed: {
     ...mapState(useCharactersStore, [ 'getCharacterById' ]),
     characterId () {
-      return this.$route.params.id;
+      return Number(this.$route.params.id);
     },
     character () {
       return this.getCharacterById(this.characterId);

@@ -1,17 +1,17 @@
 import { defineStore } from 'pinia';
-import { characterMap } from '@/mapping.js';
-import { API_CHARS_PER_PAGE, API_FIRST_PAGE, BASE_API_URL } from '../../config';
+import { Character, characterMap } from '@/mapping';
+import { API_CHARS_PER_PAGE, API_FIRST_PAGE, BASE_API_URL } from '@/config';
 
 const TOTAL_CHARS_FALLBACK_VALUE = 100;
 export const useCharactersStore = defineStore('characters', {
   state: () => ({
-    characters: [],
+    characters: [] as Character[],
     totalCharacters: TOTAL_CHARS_FALLBACK_VALUE
   }),
   getters: {
 
     getCharacterById: (state) => {
-      function getter(charId) {
+      function getter(charId: number) {
         const char = state.characters.find((char) => char.id === charId);
         return char;
       }
@@ -22,10 +22,10 @@ export const useCharactersStore = defineStore('characters', {
     }
   },
   actions: {
-    setCharacters(characters) {
+    setCharacters(characters: Character[]) {
       this.characters = characters;
     },
-    setTotalCharacters(totalCharacters) {
+    setTotalCharacters(totalCharacters): void {
       this.totalCharacters = totalCharacters;
     },
     getCurrentCharacters(currentPage, charsPerPage) {
