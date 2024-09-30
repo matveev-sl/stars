@@ -35,9 +35,9 @@
 <script>
 import CharacterCard from './CharacterCard.vue';
 import { mapActions, mapState } from 'pinia';
-import { useCharactersStore } from '@/store/charactes.js';
+import { useCharactersStore } from '@/store/charactes.ts';
 import { correctChar, correctPage } from '@/utils';
-import { API_CHARS_PER_PAGE, API_FIRST_PAGE } from '../../config';
+import { API_CHARS_PER_PAGE, API_FIRST_PAGE } from '@/config';
 
 export default {
   name: 'StarCharList',
