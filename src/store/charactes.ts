@@ -3,81 +3,71 @@ import { Character, characterMap } from '@/mapping';
 import { API_CHARS_PER_PAGE, API_FIRST_PAGE, BASE_API_URL } from '@/config';
 
 const TOTAL_CHARS_FALLBACK_VALUE = 100;
+
 export const useCharactersStore = defineStore('characters', {
   state: () => ({
     characters: [] as Character[],
-    totalCharacters: TOTAL_CHARS_FALLBACK_VALUE
+    totalCharacters: TOTAL_CHARS_FALLBACK_VALUE,
   }),
   getters: {
-
     getCharacterById: (state) => {
-      function getter(charId: number) {
-        const char = state.characters.find((char) => char.id === charId);
-        return char;
-      }
-      return getter;
+      return (charId: number) => state.characters.find((char) => char.id === charId);
     },
     getLikedIds: (state) => {
-      return state.characters.filter(item => item.isLiked).map(item => item.id);
-    }
+      return state.characters.filter((item) => item.isLiked).map((item) => item.id);
+    },
   },
   actions: {
-    setCharacters(characters: Character[]) {
+    setCharacters(characters: Character[]): void {
       this.characters = characters;
     },
-    setTotalCharacters(totalCharacters): void {
+    setTotalCharacters(totalCharacters: number): void {
       this.totalCharacters = totalCharacters;
     },
-    getCurrentCharacters(currentPage, charsPerPage) {
+    getCurrentCharacters(currentPage: number, charsPerPage: number): Character[] {
       const startIdx = (currentPage - 1) * charsPerPage;
       return this.characters.slice(startIdx, startIdx + charsPerPage);
     },
-    onLike(id) {
-      // const isLiked = this.likedIds.includes(id);
-      // if (isLiked) {
-      //   this.likedIds = this.likedIds.filter(likedId => likedId !== id);
-      // } else {
-      //   this.likedIds.push(id);
-      // }
-      // localStorage.setItem('likedIds', JSON.stringify(this.likedIds));
-
+    onLike(id: number): void {
       this.characters = this.characters.map((char) =>
         char.id === id ? { ...char, isLiked: !char.isLiked } : char
       );
+      // Optional: store liked characters in localStorage
+      const likedIds = this.getLikedIds;
+      localStorage.setItem('likedIds', JSON.stringify(likedIds));
     },
-    async fetchCharacters(page, search = '') {
+    async fetchCharacters(page: number, search = ''): Promise<{ characters: Character[]; totalCharacters: number }> {
       let url = `${BASE_API_URL}people/?page=${page}&format=json`;
-      if (search.length > 0) {
+      if (search) {
         url += `&search=${search}`;
       }
-      return fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
-          return {
-            totalCharacters: data.count ?? TOTAL_CHARS_FALLBACK_VALUE,
-            characters: data.results.map(characterMap)
-          };
-        });
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      return {
+        totalCharacters: data.count ?? TOTAL_CHARS_FALLBACK_VALUE,
+        characters: data.results.map(characterMap),
+      };
     },
-    async checkCharactersPerPageLimit(page, limit, searchQuery) {
+    async checkCharactersPerPageLimit(page: number, limit: number, searchQuery = ''): Promise<void> {
       if (this.getCurrentCharacters(page, limit).length >= limit * page) {
-        return undefined;
+        return;
       }
+
       try {
         const startPage = Math.ceil(this.characters.length / API_CHARS_PER_PAGE) + API_FIRST_PAGE;
-        const finalPage = Math.ceil(page * limit / API_CHARS_PER_PAGE);
+        const finalPage = Math.ceil((page * limit) / API_CHARS_PER_PAGE);
 
         for (let p = startPage; p <= finalPage; p++) {
           const { characters, totalCharacters } = await this.fetchCharacters(p, searchQuery);
-          this.setCharacters([ ...this.characters, ...characters ]);
-          this.totalCharacters = totalCharacters;
+          this.setCharacters([...this.characters, ...characters]);
+          this.setTotalCharacters(totalCharacters);
         }
-        return undefined;
       } catch (error) {
-        console.error ('Ошибка пейдж лимит', error);
+        console.error('Ошибка при загрузке страниц', error);
         throw error;
       }
-
-    }
-  }
+    },
+  },
 });

@@ -1,21 +1,31 @@
 const UNKNOWN_VALUE = '-- неизвестно --';
 
+// Описание типа для apiCharacter
+export interface ApiCharacter {
+  name?: string;          // Имя может быть неопределенным
+  height: string;        // Высота обязательно
+  mass: string | number;  // Масса может быть строкой или числом
+  birth_year?: string;   // Год рождения может быть неопределенным
+  url: string;           // URL обязательно
+}
+
 export type Character = {
   name: string;
   height: string;
   mass: string | number;
   isLiked: boolean;
   id: number;
-  age: number | string; // мы подчеркиваем, что в нашем дизайне что-то не так
+  age: number | string; // Мы подчеркиваем, что в нашем дизайне что-то не так
 }
 
-export const characterMap = (apiCharacter: any): Character => {
-  const height = isNaN(apiCharacter.height) ? UNKNOWN_VALUE : apiCharacter.height;
+// Функция для преобразования apiCharacter в Character
+export const characterMap = (apiCharacter: ApiCharacter): Character => {
+  const height = isNaN(parseFloat(apiCharacter.height)) ? UNKNOWN_VALUE : apiCharacter.height;
   const currentYear = new Date().getFullYear();
   return {
     name: apiCharacter.name ?? UNKNOWN_VALUE,
     height: height,
-    mass: isNaN(apiCharacter.mass) ? UNKNOWN_VALUE : Number(apiCharacter.mass),
+    mass: isNaN(Number(apiCharacter.mass)) ? UNKNOWN_VALUE : Number(apiCharacter.mass),
     isLiked: false,
     id: parseId(apiCharacter.url),
     age: isNaN(parseInt(apiCharacter.birth_year) + currentYear)
@@ -24,8 +34,9 @@ export const characterMap = (apiCharacter: any): Character => {
   };
 };
 
-export const parseId = (url: string) => {
-  // expected url: 'https://swapi.dev/api/people/2/'
+// Функция для извлечения id из URL
+export const parseId = (url: string): number => {
+  // Ожидаемый URL: 'https://swapi.dev/api/people/2/'
   const idRegex = /.*people\/(\d+)/;
   const match = url.match(idRegex);
   if (match && match.length === 2) {

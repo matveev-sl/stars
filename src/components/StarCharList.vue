@@ -83,13 +83,6 @@ export default {
     }
   },
   async mounted() {
-    // this.countVisits();
-    // const searchQuery = this.$route?.query?.search ?? '';
-    // const currentPage = Number(this.$route?.query?.page ?? API_FIRST_PAGE);
-    // const charsPerPage = Number(this.$route?.query?.limit ?? API_CHARS_PER_PAGE);
-    // this.searchQuery = searchQuery;
-    // this.currentPage = currentPage;
-    // this.charsPerPage = charsPerPage;
     this.correctUrl (this.currentPage);
     this.correctUrl (this.charsPerPage);
     try {
@@ -100,7 +93,7 @@ export default {
     }
   },
   unmounted() {
-    console.log ('im unmounted');
+    // console.log ('im unmounted');
   },
   methods: {
     ...mapActions(useCharactersStore, [
@@ -130,8 +123,6 @@ export default {
     correctUrl (value) {
       if (isNaN(value)) {
         this.charsPerPage = 1;
-        // this.error = 'URL не должен содержать символы'
-        // alert('URL не должен содержать символы');
       }
       return value;
     },
