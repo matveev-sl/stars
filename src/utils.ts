@@ -1,15 +1,17 @@
 import { API_CHARS_PER_PAGE, API_FIRST_PAGE } from './config';
-
-export function correctPage(url) {
-  if (isNaN(parseInt(url))) {
+export function getPage(url: string | undefined): number {
+  if (!url) return API_FIRST_PAGE 
+  const pageNumber = parseInt(url); 
+  if (isNaN(pageNumber)) {
     return API_FIRST_PAGE;
   }
-  return parseInt(url);
+  return pageNumber;
 }
-
-export function correctChar(url) {
-  if (isNaN(parseInt(url))) {
+export function getCharLimit(queryParam?: string ): number {
+  if (!queryParam) return API_CHARS_PER_PAGE
+  const charCount = parseInt(queryParam); 
+  if (isNaN(charCount)) {
     return API_CHARS_PER_PAGE;
   }
-  return parseInt(url);
+  return charCount;
 }

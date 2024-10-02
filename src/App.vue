@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <v-btn text :to="{ name: 'Home' }">Home</v-btn>
-    <v-btn text :to="{ name: 'AboutPage' }">About</v-btn>
+    <v-btn text="Home" :to="{ name: 'Home' }"/>
+    <v-btn text="About" :to="{ name: 'AboutPage' }"/>
     <p>Лайкнутые персонажы: {{ getLikedIds }} раз.</p>
     <router-view></router-view>
  <!-- <StarCharList /> -->
@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import StarCharList from './components/StarCharList.vue';
-import { useCharactersStore } from '@/store/charactes.ts';
+import { useCharactersStore } from '@/store/charactes';
 import { mapState } from 'pinia';
 
 export default {
@@ -30,7 +30,7 @@ export default {
     // }
   },
   mounted() {
-    // this.countVisits();
+    this.loadLikes();
     window.addEventListener('beforeunload', this.storeSave);
 
   },
@@ -38,19 +38,20 @@ export default {
     //   localStorage.setItem('visitCount', this.visitCount);
   },
   methods: {
-    // countVisits() {
-    //   let visits = localStorage.getItem('visitCount');
-    //   if (visits === null) {
-    //     visits = 1;
-    //   } else {
-    //     visits = parseInt(visits) + 1;
-    //   }
-    //   this.visitCount = visits;
-    // },
+    
     storeSave() {
       const ids = this.getLikedIds.join(',');
       localStorage.setItem('IDS', ids);
+    },
+    loadLikes() {
+    const likedIds = localStorage.getItem('IDS'); 
+    if (likedIds) {
+    const idsArray = likedIds.split(',').map(Number)
+    const charactersStore = useCharactersStore(); 
+    charactersStore.setLikedIds(idsArray);
+      }
     }
+    
   }
 };
 </script>

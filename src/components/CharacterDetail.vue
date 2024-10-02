@@ -1,6 +1,7 @@
 <template>
     <v-container>
-      <v-card>
+      <div v-if="!character">Персонаж с айди {{ characterId }} не найден</div>
+      <v-card v-else>
         <v-card-title>{{ character.name }}</v-card-title>
         <v-card-text>
           <p>Height: {{ character.height }}</p>
@@ -12,9 +13,9 @@
     </v-container>
   </template>
 
-<script>
+<script lang="ts">
 import { mapActions, mapState } from 'pinia';
-import { useCharactersStore } from '@/store/charactes.ts';
+import { useCharactersStore } from '@/store/charactes';
 export default {
   name: 'CharacterDetail',
   data() {
@@ -22,7 +23,7 @@ export default {
   },
   computed: {
     ...mapState(useCharactersStore, [ 'getCharacterById' ]),
-    characterId () {
+    characterId () : number {
       return Number(this.$route.params.id);
     },
     character () {
