@@ -24,6 +24,12 @@ export const useCharactersStore = defineStore('characters', {
     setTotalCharacters(totalCharacters: number): void {
       this.totalCharacters = totalCharacters;
     },
+    setLikedIds(likedIds: number[]): void {
+      this.characters = this.characters.map((char: any) => ({
+        ...char,
+        isLiked: likedIds.includes(char.id), 
+      }));
+    },
     getCurrentCharacters(currentPage: number, charsPerPage: number): Character[] {
       const startIdx = (currentPage - 1) * charsPerPage;
       return this.characters.slice(startIdx, startIdx + charsPerPage);

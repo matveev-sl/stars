@@ -30,7 +30,7 @@ export default {
     // }
   },
   mounted() {
-    // this.countVisits();
+    this.loadLikes();
     window.addEventListener('beforeunload', this.storeSave);
 
   },
@@ -38,19 +38,20 @@ export default {
     //   localStorage.setItem('visitCount', this.visitCount);
   },
   methods: {
-    // countVisits() {
-    //   let visits = localStorage.getItem('visitCount');
-    //   if (visits === null) {
-    //     visits = 1;
-    //   } else {
-    //     visits = parseInt(visits) + 1;
-    //   }
-    //   this.visitCount = visits;
-    // },
+    
     storeSave() {
       const ids = this.getLikedIds.join(',');
       localStorage.setItem('IDS', ids);
+    },
+    loadLikes() {
+      const likedIds = localStorage.getItem('IDS'); 
+      if (likedIds) {
+    const idsArray = likedIds.split(',')
+    const charactersStore = useCharactersStore(); 
+    charactersStore.setLikedIds(idsArray);
+      }
     }
+    
   }
 };
 </script>
