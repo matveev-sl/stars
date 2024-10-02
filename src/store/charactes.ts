@@ -2,18 +2,23 @@ import { defineStore } from 'pinia';
 import { Character, characterMap } from '@/mapping';
 import { API_CHARS_PER_PAGE, API_FIRST_PAGE, BASE_API_URL } from '@/config';
 
+type State = {
+  characters : Character[];
+  totalCharacters : number;
+}
+
 const TOTAL_CHARS_FALLBACK_VALUE = 100;
 
 export const useCharactersStore = defineStore('characters', {
-  state: () => ({
+  state: (): State => ({
     characters: [] as Character[],
     totalCharacters: TOTAL_CHARS_FALLBACK_VALUE,
   }),
   getters: {
-    getCharacterById: (state) => {
+    getCharacterById: (state: State) : (charId : number) => Character | undefined => {
       return (charId: number) => state.characters.find((char) => char.id === charId);
     },
-    getLikedIds: (state) => {
+    getLikedIds: (state: State) => {
       return state.characters.filter((item) => item.isLiked).map((item) => item.id);
     },
   },
@@ -25,7 +30,9 @@ export const useCharactersStore = defineStore('characters', {
       this.totalCharacters = totalCharacters;
     },
     setLikedIds(likedIds: number[]): void {
-      this.characters = this.characters.map((char: any) => ({
+      console.log('LikedIds', likedIds)
+      console.log('This Caharcters', this.characters)
+      this.characters = this.characters.map((char) => ({
         ...char,
         isLiked: likedIds.includes(char.id), 
       }));
@@ -56,7 +63,7 @@ export const useCharactersStore = defineStore('characters', {
         characters: data.results.map(characterMap),
       };
     },
-    async checkCharactersPerPageLimit(page: number, limit: number, searchQuery = ''): Promise<void> {
+    async checkCharactersPerPageLimit(page: number, limit: number, searchQuery : string=""): Promise<void> {
       if (this.getCurrentCharacters(page, limit).length >= limit * page) {
         return;
       }

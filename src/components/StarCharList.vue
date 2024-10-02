@@ -32,11 +32,11 @@
   </v-container>
 </template>
 
-<script>
+<script lang="ts">
 import CharacterCard from './CharacterCard.vue';
 import { mapActions, mapState } from 'pinia';
-import { useCharactersStore } from '@/store/charactes.ts';
-import { correctChar, correctPage } from '@/utils';
+import { useCharactersStore } from '@/store/charactes';
+import { getPage, getCharLimit } from '@/utils';
 import { API_CHARS_PER_PAGE, API_FIRST_PAGE } from '@/config';
 
 export default {
@@ -49,9 +49,9 @@ export default {
       isLoading: false,
       error: '',
       searchDebounce: undefined,
-      searchQuery: this.$route?.query?.search ?? '',
-      currentPage: correctPage(this.$route?.query?.page ?? API_FIRST_PAGE),
-      charsPerPage: correctChar(this.$route?.query?.limit ?? API_CHARS_PER_PAGE)
+      searchQuery: this.$route?.query?.search ?? "",
+      currentPage: getPage(this.$route?.query?.page),
+      charsPerPage: getCharLimit(this.$route?.query?.limit)
     };
   },
   computed: {
@@ -67,11 +67,12 @@ export default {
   watch: {
     async currentPage(newVal) {
       this.updateUrl();
+      // @ts-ignore
       await this.checkCharactersPerPageLimit(newVal, this.charsPerPage, this.searchQuery);
     },
     async charsPerPage(newVal) {
       this.updateUrl();
-      await this.checkCharactersPerPageLimit(this.currentPage, newVal, this.searchQuery);
+      await this.checkCharactersPerPageLimit(this.currentPage, newVal, this.searchQuery as string);
     },
     searchQuery() {
       if (this.searchDebounce) {
@@ -83,8 +84,6 @@ export default {
     }
   },
   async mounted() {
-    this.correctUrl (this.currentPage);
-    this.correctUrl (this.charsPerPage);
     try {
       await this.checkCharactersPerPageLimit(
         this.currentPage, this.charsPerPage, this.searchQuery);
@@ -120,12 +119,6 @@ export default {
         }
       });
     },
-    correctUrl (value) {
-      if (isNaN(value)) {
-        this.charsPerPage = 1;
-      }
-      return value;
-    },
     async onSearch() {
       this.updateUrl();
       if (this.searchQuery !== this.$route.query.search) {
@@ -133,16 +126,6 @@ export default {
       const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, this.searchQuery);
       this.setCharacters(characters);
       this.setTotalCharacters(totalCharacters);
-    },
-    countVisits() {
-      let visits = localStorage.getItem('visitCount');
-      if (visits == undefined) {
-        visits = 1;
-      } else {
-        visits = parseInt(visits) + 1;
-      }
-      localStorage.setItem('visitCount', visits);
-      alert(`Вы посетили этот сайт ${visits} раз.`);
     }
   }
 };

@@ -16,7 +16,7 @@
     </v-list-item>
   </template>
 
-<script>
+<script lang="ts">
 export default {
   // Название компонента
   name: 'CharacterCard',
