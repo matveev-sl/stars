@@ -5,6 +5,7 @@ import { API_CHARS_PER_PAGE, API_FIRST_PAGE, BASE_API_URL } from '@/config';
 type State = {
   characters : Character[];
   totalCharacters : number;
+  likesIds: number[];
 }
 
 const TOTAL_CHARS_FALLBACK_VALUE = 100;
@@ -12,6 +13,7 @@ const TOTAL_CHARS_FALLBACK_VALUE = 100;
 export const useCharactersStore = defineStore('characters', {
   state: (): State => ({
     characters: [] as Character[],
+    likesIds: [],
     totalCharacters: TOTAL_CHARS_FALLBACK_VALUE,
   }),
   getters: {
@@ -30,13 +32,16 @@ export const useCharactersStore = defineStore('characters', {
       this.totalCharacters = totalCharacters;
     },
     setLikedIds(likedIds: number[]): void {
-      console.log('LikedIds', likedIds)
-      console.log('This Caharcters', this.characters)
+      this.likesIds = likedIds; 
+      console.log('Liked IDs:', likedIds); // Проверка перед обновлением
       this.characters = this.characters.map((char) => ({
         ...char,
-        isLiked: likedIds.includes(char.id), 
+        isLiked: likedIds.includes(char.id),
       }));
+      console.log('Updated characters:', this.characters); // Проверка обновленных персонажей
     },
+    
+    
     getCurrentCharacters(currentPage: number, charsPerPage: number): Character[] {
       const startIdx = (currentPage - 1) * charsPerPage;
       return this.characters.slice(startIdx, startIdx + charsPerPage);
@@ -45,7 +50,6 @@ export const useCharactersStore = defineStore('characters', {
       this.characters = this.characters.map((char) =>
         char.id === id ? { ...char, isLiked: !char.isLiked } : char
       );
-      // Optional: store liked characters in localStorage
       const likedIds = this.getLikedIds;
       localStorage.setItem('likedIds', JSON.stringify(likedIds));
     },
@@ -57,7 +61,7 @@ export const useCharactersStore = defineStore('characters', {
 
       const response = await fetch(url);
       const data = await response.json();
-
+      
       return {
         totalCharacters: data.count ?? TOTAL_CHARS_FALLBACK_VALUE,
         characters: data.results.map(characterMap),

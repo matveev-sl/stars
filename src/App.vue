@@ -25,30 +25,28 @@ export default {
   },
   computed: {
     ...mapState(useCharactersStore, [ 'getLikedIds' ])
-    // getLikedIds_2 () {
-    //   return this.getLikedIds();
-    // }
   },
   mounted() {
+    
+    
+   
+  },
+  beforeUpdate() {
     this.loadLikes();
-    window.addEventListener('beforeunload', this.storeSave);
-
   },
   beforeUnmount() {
-    //   localStorage.setItem('visitCount', this.visitCount);
+  
   },
   methods: {
-    
-    storeSave() {
-      const ids = this.getLikedIds.join(',');
-      localStorage.setItem('IDS', ids);
-    },
     loadLikes() {
-    const likedIds = localStorage.getItem('IDS'); 
-    if (likedIds) {
-    const idsArray = likedIds.split(',').map(Number)
+    const likedIdsFromStorage = localStorage.getItem('likedIds'); 
+    console.log('loadLikes - likedIds from localStorage:', likedIdsFromStorage);
+    if (likedIdsFromStorage) {
+    const idsArray = JSON.parse(likedIdsFromStorage)
+    console.log('idsArray',idsArray)
     const charactersStore = useCharactersStore(); 
-    charactersStore.setLikedIds(idsArray);
+    charactersStore.setLikedIds(idsArray); // Загружаем лайки из localStorage
+    console.log('loadLikes - setLikedIds in store:', idsArray);  
       }
     }
     
