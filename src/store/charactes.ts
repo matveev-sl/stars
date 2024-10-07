@@ -20,8 +20,8 @@ export const useCharactersStore = defineStore('characters', {
     getCharacterById: (state: State) : (charId : number) => Character | undefined => {
       return (charId: number) => state.characters.find((char) => char.id === charId);
     },
-    getLikedIds: (state: State) => {
-      return state.characters.filter((item) => item.isLiked).map((item) => item.id);
+    getIsLiked: (state: State): (id: number) => boolean => {
+      return (charId: number) => state.likesIds.includes(charId);
     }
   },
   actions: {
@@ -33,24 +33,14 @@ export const useCharactersStore = defineStore('characters', {
     },
     setLikedIds(likedIds: number[]): void {
       this.likesIds = likedIds;
-      console.log('Liked IDs:', likedIds); // Проверка перед обновлением
-      this.characters = this.characters.map((char) => ({
-        ...char,
-        isLiked: likedIds.includes(char.id)
-      }));
-      console.log('Updated characters:', this.characters); // Проверка обновленных персонажей
     },
-
     getCurrentCharacters(currentPage: number, charsPerPage: number): Character[] {
       const startIdx = (currentPage - 1) * charsPerPage;
       return this.characters.slice(startIdx, startIdx + charsPerPage);
     },
     onLike(id: number): void {
-      this.characters = this.characters.map((char) =>
-        char.id === id ? { ...char, isLiked: !char.isLiked } : char
-      );
-      const likedIds = this.getLikedIds;
-      localStorage.setItem('likedIds', JSON.stringify(likedIds));
+      this.likesIds = [ ...this.likesIds, id ];
+      localStorage.setItem('likedIds', JSON.stringify(this.likesIds));
     },
     async fetchCharacters(page: number, search = ''): Promise<{ characters: Character[]; totalCharacters: number }> {
       let url = `${BASE_API_URL}people/?page=${page}&format=json`;

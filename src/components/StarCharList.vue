@@ -13,7 +13,7 @@
         :key="index"
         :to="{ name: 'CharacterDetail', params: { id: char.id } }"
       >
-        <CharacterCard :character="char" @like="onLike" />
+        <CharacterCard :character="char" :liked="getIsLiked(char.id)" @like="onLike"/>
       </v-list-item>
     </div>
     <v-select
@@ -37,7 +37,7 @@ import CharacterCard from './CharacterCard.vue';
 import { mapActions, mapState } from 'pinia';
 import { useCharactersStore } from '@/store/charactes';
 import { getPage, getCharLimit } from '@/utils';
-import { API_CHARS_PER_PAGE, API_FIRST_PAGE } from '@/config';
+import { API_FIRST_PAGE } from '@/config';
 
 export default {
   name: 'StarCharList',
@@ -49,13 +49,13 @@ export default {
       isLoading: false,
       error: '',
       searchDebounce: undefined,
-      searchQuery: this.$route?.query?.search ?? "",
+      searchQuery: this.$route?.query?.search ?? '',
       currentPage: getPage(this.$route?.query?.page),
       charsPerPage: getCharLimit(this.$route?.query?.limit)
     };
   },
   computed: {
-
+    ...mapState(useCharactersStore, [ 'getIsLiked' ]),
     currentCharacters() {
       return this.getCurrentCharacters(this.currentPage, this.charsPerPage);
     },
@@ -88,11 +88,9 @@ export default {
       await this.checkCharactersPerPageLimit(
         this.currentPage, this.charsPerPage, this.searchQuery);
     } catch (error) {
-      this.error = 'XXX - Error';
+      console.error('Error on mounted: ', error);
+      this.error = 'Произошла серверная ошибка';
     }
-  },
-  unmounted() {
-    // console.log ('im unmounted');
   },
   methods: {
     ...mapActions(useCharactersStore, [

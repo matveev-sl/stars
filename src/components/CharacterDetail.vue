@@ -7,7 +7,7 @@
           <p>Height: {{ character.height }}</p>
           <p>Mass: {{ character.mass }}</p>
           <p>Age: {{ character.age }}</p>
-          <v-btn @click="toggleLike">{{ character.isLiked ? 'Liked' : 'Like' }}</v-btn>
+          <v-btn @click="toggleLike">{{ isLiked ? 'Liked' : 'Like' }}</v-btn>
         </v-card-text>
       </v-card>
     </v-container>
@@ -22,12 +22,15 @@ export default {
     return {};
   },
   computed: {
-    ...mapState(useCharactersStore, [ 'getCharacterById' ]),
+    ...mapState(useCharactersStore, [ 'getCharacterById', 'getIsLiked' ]),
     characterId () : number {
       return Number(this.$route.params.id);
     },
     character () {
       return this.getCharacterById(this.characterId);
+    },
+    isLiked() {
+      return this.getIsLiked(this.characterId);
     }
   },
   methods: {
@@ -39,7 +42,3 @@ export default {
   }
 };
 </script>
-
-  <style scoped>
-  /* Ваши стили здесь */
-  </style>

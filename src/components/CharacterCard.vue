@@ -11,12 +11,15 @@
         <v-list-item-subtitle>Mass: {{ character.mass }}</v-list-item-subtitle>
         <v-list-item-subtitle>Age: {{ character.age }}</v-list-item-subtitle>
         <v-btn @click.stop.prevent="onLikeCharacter" >
-          {{ character.isLiked ? 'Liked' : 'Like' }}
+          {{ liked ? 'Liked' : 'Like' }}
         </v-btn>
     </v-list-item>
   </template>
 
 <script lang="ts">
+import { PropType } from 'vue';
+import { Character } from '@/mapping';
+
 export default {
   // Название компонента
   name: 'CharacterCard',
@@ -24,7 +27,11 @@ export default {
   props: {
     // Проп character, который должен быть объектом и является обязательным
     character: {
-      type: Object,
+      type: Object as PropType<Character>,
+      required: true
+    },
+    liked: {
+      type: Boolean,
       required: true
     },
     onLike: {
