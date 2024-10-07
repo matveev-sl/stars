@@ -14,7 +14,7 @@ export const useCharactersStore = defineStore('characters', {
   state: (): State => ({
     characters: [] as Character[],
     likesIds: [],
-    totalCharacters: TOTAL_CHARS_FALLBACK_VALUE,
+    totalCharacters: TOTAL_CHARS_FALLBACK_VALUE
   }),
   getters: {
     getCharacterById: (state: State) : (charId : number) => Character | undefined => {
@@ -22,7 +22,7 @@ export const useCharactersStore = defineStore('characters', {
     },
     getLikedIds: (state: State) => {
       return state.characters.filter((item) => item.isLiked).map((item) => item.id);
-    },
+    }
   },
   actions: {
     setCharacters(characters: Character[]): void {
@@ -32,16 +32,15 @@ export const useCharactersStore = defineStore('characters', {
       this.totalCharacters = totalCharacters;
     },
     setLikedIds(likedIds: number[]): void {
-      this.likesIds = likedIds; 
+      this.likesIds = likedIds;
       console.log('Liked IDs:', likedIds); // Проверка перед обновлением
       this.characters = this.characters.map((char) => ({
         ...char,
-        isLiked: likedIds.includes(char.id),
+        isLiked: likedIds.includes(char.id)
       }));
       console.log('Updated characters:', this.characters); // Проверка обновленных персонажей
     },
-    
-    
+
     getCurrentCharacters(currentPage: number, charsPerPage: number): Character[] {
       const startIdx = (currentPage - 1) * charsPerPage;
       return this.characters.slice(startIdx, startIdx + charsPerPage);
@@ -61,13 +60,13 @@ export const useCharactersStore = defineStore('characters', {
 
       const response = await fetch(url);
       const data = await response.json();
-      
+
       return {
         totalCharacters: data.count ?? TOTAL_CHARS_FALLBACK_VALUE,
-        characters: data.results.map(characterMap),
+        characters: data.results.map(characterMap)
       };
     },
-    async checkCharactersPerPageLimit(page: number, limit: number, searchQuery : string=""): Promise<void> {
+    async checkCharactersPerPageLimit(page: number, limit: number, searchQuery : string = ''): Promise<void> {
       if (this.getCurrentCharacters(page, limit).length >= limit * page) {
         return;
       }
@@ -78,13 +77,13 @@ export const useCharactersStore = defineStore('characters', {
 
         for (let p = startPage; p <= finalPage; p++) {
           const { characters, totalCharacters } = await this.fetchCharacters(p, searchQuery);
-          this.setCharacters([...this.characters, ...characters]);
+          this.setCharacters([ ...this.characters, ...characters ]);
           this.setTotalCharacters(totalCharacters);
         }
       } catch (error) {
         console.error('Ошибка при загрузке страниц', error);
         throw error;
       }
-    },
-  },
+    }
+  }
 });

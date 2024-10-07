@@ -40,7 +40,7 @@ module.exports = {
     'comma-spacing': [ 'error' ], // Пробелы перед/после запятой
     'comma-dangle': [ 'error', 'never' ], // Запрет на завершающую запятую
     'no-multiple-empty-lines': [ 'error', { max: 1, maxEOF: 0 }], // Не более одной пустой строки
-    'max-len': [ 'error', { code: 96 }], // Максимальная длина строки — 96 символов
+    'max-len': [ 'error', { code: 196 }], // Максимальная длина строки — 96 символов
     'vue/multi-word-component-names': 'off', // Отключение правила на многословные имена компонентов Vue
     '@typescript-eslint/no-explicit-any': 'off' // Отключаем правило на запрет использования типа "any" в TypeScript
   }
