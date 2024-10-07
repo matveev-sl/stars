@@ -1,6 +1,6 @@
 <template>
     <v-container>
-      <div v-if="!character">Персонаж с айди {{ characterId }} не найден</div>
+      <div v-if="!character">Загружается...</div>
       <v-card v-else>
         <v-card-title>{{ character.name }}</v-card-title>
         <v-card-text>
@@ -16,6 +16,7 @@
 <script lang="ts">
 import { mapActions, mapState } from 'pinia';
 import { useCharactersStore } from '@/store/charactes';
+
 export default {
   name: 'CharacterDetail',
   data() {
@@ -33,11 +34,13 @@ export default {
       return this.getIsLiked(this.characterId);
     }
   },
+  mounted() {
+    this.checkCharacter(this.characterId);
+  },
   methods: {
-    ...mapActions(useCharactersStore, [ 'onLike' ]),
+    ...mapActions(useCharactersStore, [ 'onLike', 'checkCharacter' ]),
     toggleLike() {
       this.onLike(this.characterId); // Используем сохраненный ID
-
     }
   }
 };

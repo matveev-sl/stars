@@ -3,6 +3,7 @@ import { Character, characterMap } from '@/mapping';
 import { API_CHARS_PER_PAGE, API_FIRST_PAGE, BASE_API_URL } from '@/config';
 
 type State = {
+  character: Character | undefined;
   characters : Character[];
   totalCharacters : number;
   likesIds: number[];
@@ -12,13 +13,16 @@ const TOTAL_CHARS_FALLBACK_VALUE = 100;
 
 export const useCharactersStore = defineStore('characters', {
   state: (): State => ({
+    character: undefined,
     characters: [] as Character[],
     likesIds: [],
     totalCharacters: TOTAL_CHARS_FALLBACK_VALUE
   }),
   getters: {
     getCharacterById: (state: State) : (charId : number) => Character | undefined => {
-      return (charId: number) => state.characters.find((char) => char.id === charId);
+      return (charId: number) => state.character?.id === charId
+        ? state.character
+        : state.characters.find((char) => char.id === charId);
     },
     getIsLiked: (state: State): (id: number) => boolean => {
       return (charId: number) => state.likesIds.includes(charId);
@@ -55,6 +59,16 @@ export const useCharactersStore = defineStore('characters', {
         totalCharacters: data.count ?? TOTAL_CHARS_FALLBACK_VALUE,
         characters: data.results.map(characterMap)
       };
+    },
+    async fetCharacter(id: number): Promise<Character> {
+      const url = `${BASE_API_URL}people/${id}/?format=json`;
+      const response = await fetch(url);
+      const data = await response.json();
+      return characterMap(data);
+    },
+    async checkCharacter(id: number): Promise<void> {
+      if (this.getCharacterById(id)) return;
+      this.character = await this.fetCharacter(id);
     },
     async checkCharactersPerPageLimit(page: number, limit: number, searchQuery : string = ''): Promise<void> {
       if (this.getCurrentCharacters(page, limit).length >= limit * page) {
