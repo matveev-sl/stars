@@ -3,24 +3,30 @@ import { Character, characterMap } from '@/mapping';
 import { API_CHARS_PER_PAGE, API_FIRST_PAGE, BASE_API_URL } from '@/config';
 
 type State = {
+  character: Character | undefined;
   characters : Character[];
   totalCharacters : number;
+  likesIds: number[];
 }
 
 const TOTAL_CHARS_FALLBACK_VALUE = 100;
 
 export const useCharactersStore = defineStore('characters', {
   state: (): State => ({
+    character: undefined,
     characters: [] as Character[],
-    totalCharacters: TOTAL_CHARS_FALLBACK_VALUE,
+    likesIds: [],
+    totalCharacters: TOTAL_CHARS_FALLBACK_VALUE
   }),
   getters: {
     getCharacterById: (state: State) : (charId : number) => Character | undefined => {
-      return (charId: number) => state.characters.find((char) => char.id === charId);
+      return (charId: number) => state.character?.id === charId
+        ? state.character
+        : state.characters.find((char) => char.id === charId);
     },
-    getLikedIds: (state: State) => {
-      return state.characters.filter((item) => item.isLiked).map((item) => item.id);
-    },
+    getIsLiked: (state: State): (id: number) => boolean => {
+      return (charId: number) => state.likesIds.includes(charId);
+    }
   },
   actions: {
     setCharacters(characters: Character[]): void {
@@ -30,24 +36,15 @@ export const useCharactersStore = defineStore('characters', {
       this.totalCharacters = totalCharacters;
     },
     setLikedIds(likedIds: number[]): void {
-      console.log('LikedIds', likedIds)
-      console.log('This Caharcters', this.characters)
-      this.characters = this.characters.map((char) => ({
-        ...char,
-        isLiked: likedIds.includes(char.id), 
-      }));
+      this.likesIds = likedIds;
     },
     getCurrentCharacters(currentPage: number, charsPerPage: number): Character[] {
       const startIdx = (currentPage - 1) * charsPerPage;
       return this.characters.slice(startIdx, startIdx + charsPerPage);
     },
     onLike(id: number): void {
-      this.characters = this.characters.map((char) =>
-        char.id === id ? { ...char, isLiked: !char.isLiked } : char
-      );
-      // Optional: store liked characters in localStorage
-      const likedIds = this.getLikedIds;
-      localStorage.setItem('likedIds', JSON.stringify(likedIds));
+      this.likesIds = [ ...this.likesIds, id ];
+      localStorage.setItem('likedIds', JSON.stringify(this.likesIds));
     },
     async fetchCharacters(page: number, search = ''): Promise<{ characters: Character[]; totalCharacters: number }> {
       let url = `${BASE_API_URL}people/?page=${page}&format=json`;
@@ -60,10 +57,20 @@ export const useCharactersStore = defineStore('characters', {
 
       return {
         totalCharacters: data.count ?? TOTAL_CHARS_FALLBACK_VALUE,
-        characters: data.results.map(characterMap),
+        characters: data.results.map(characterMap)
       };
     },
-    async checkCharactersPerPageLimit(page: number, limit: number, searchQuery : string=""): Promise<void> {
+    async fetCharacter(id: number): Promise<Character> {
+      const url = `${BASE_API_URL}people/${id}/?format=json`;
+      const response = await fetch(url);
+      const data = await response.json();
+      return characterMap(data);
+    },
+    async checkCharacter(id: number): Promise<void> {
+      if (this.getCharacterById(id)) return;
+      this.character = await this.fetCharacter(id);
+    },
+    async checkCharactersPerPageLimit(page: number, limit: number, searchQuery : string = ''): Promise<void> {
       if (this.getCurrentCharacters(page, limit).length >= limit * page) {
         return;
       }
@@ -74,13 +81,13 @@ export const useCharactersStore = defineStore('characters', {
 
         for (let p = startPage; p <= finalPage; p++) {
           const { characters, totalCharacters } = await this.fetchCharacters(p, searchQuery);
-          this.setCharacters([...this.characters, ...characters]);
+          this.setCharacters([ ...this.characters, ...characters ]);
           this.setTotalCharacters(totalCharacters);
         }
       } catch (error) {
         console.error('Ошибка при загрузке страниц', error);
         throw error;
       }
-    },
-  },
+    }
+  }
 });
