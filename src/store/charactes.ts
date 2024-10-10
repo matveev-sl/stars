@@ -16,7 +16,8 @@ export const useCharactersStore = defineStore('characters', {
     character: undefined,
     characters: [] as Character[],
     likesIds: [],
-    totalCharacters: TOTAL_CHARS_FALLBACK_VALUE
+    totalCharacters: TOTAL_CHARS_FALLBACK_VALUE,
+    promisesInProgress: {}
   }),
   getters: {
     getCharacterById: (state: State) : (charId : number) => Character | undefined => {
@@ -26,21 +27,63 @@ export const useCharactersStore = defineStore('characters', {
     },
     getIsLiked: (state: State): (id: number) => boolean => {
       return (charId: number) => state.likesIds.includes(charId);
+    },
+    getCurrentCharacters: (state) => {
+      return (currentPage, charsPerPage) => {
+        const startIdx = (currentPage - 1) * charsPerPage;
+        return state.characters.slice(startIdx, startIdx + charsPerPage);
+      };
     }
   },
   actions: {
-    setCharacters(characters: Character[]): void {
-      this.characters = characters;
+    // setCharacters(characters: Character[]): void {
+    //   this.characters = characters;
+    // },
+    setCharacters(characters, page) {
+      if (page < 1) throw new Error('Page cannot be less than 1');
+      this.characters = new Array(this.totalCharacters)
+        .fill(undefined)
+        .map((_, idx) => this.characters[idx] !== undefined ? { ...this.characters[idx] } : undefined)
+        .map((value, idx) =>
+          idx >= (page - 1) * API_CHARS_PER_PAGE && idx < page * API_CHARS_PER_PAGE
+            ? characters[idx % API_CHARS_PER_PAGE]
+            : value
+        );
+    },
+    async triggerServerFetch(page, charsPerPage, searchQuery, force = false) {
+      if (force) {
+        await this.fetchAndSetCharacters(page, searchQuery);
+      }
+
+      const pagesToFetch = this.characters
+        .map((value, idx) =>
+          idx >= (page - 1) * charsPerPage && idx < page * charsPerPage && value === undefined
+            ? idx
+            : null
+        )
+        .filter(value => value)
+        .reduce((acc, charIdx) =>
+          Array.from(new Set([ ...acc, Math.floor(charIdx / API_CHARS_PER_PAGE + 1) ]))
+        , []);
+
+      await Promise.all(pagesToFetch.map((pageToFetch) => this.fetchAndSetCharacters(pageToFetch, searchQuery)));
+    },
+    async fetchAndSetCharacters(page, searchQuery) {
+      if (this.promisesInProgress[page]) {
+        console.warn('Promise already pending', page);
+        return;
+      }
+      this.promisesInProgress = { ...this.promisesInProgress, [page]: true };
+      const { characters, totalCharacters } = await this.fetchCharacters(page, searchQuery);
+      this.promisesInProgress = { ...this.promisesInProgress, [page]: false };
+      this.totalCharacters = totalCharacters;
+      this.setCharacters(characters, page);
     },
     setTotalCharacters(totalCharacters: number): void {
       this.totalCharacters = totalCharacters;
     },
     setLikedIds(likedIds: number[]): void {
       this.likesIds = likedIds;
-    },
-    getCurrentCharacters(currentPage: number, charsPerPage: number): Character[] {
-      const startIdx = (currentPage - 1) * charsPerPage;
-      return this.characters.slice(startIdx, startIdx + charsPerPage);
     },
     onLike(id: number): void {
       this.likesIds = [ ...this.likesIds, id ];
@@ -69,25 +112,6 @@ export const useCharactersStore = defineStore('characters', {
     async checkCharacter(id: number): Promise<void> {
       if (this.getCharacterById(id)) return;
       this.character = await this.fetCharacter(id);
-    },
-    async checkCharactersPerPageLimit(page: number, limit: number, searchQuery : string = ''): Promise<void> {
-      if (this.getCurrentCharacters(page, limit).length >= limit * page) {
-        return;
-      }
-
-      try {
-        const startPage = Math.ceil(this.characters.length / API_CHARS_PER_PAGE) + API_FIRST_PAGE;
-        const finalPage = Math.ceil((page * limit) / API_CHARS_PER_PAGE);
-
-        for (let p = startPage; p <= finalPage; p++) {
-          const { characters, totalCharacters } = await this.fetchCharacters(p, searchQuery);
-          this.setCharacters([ ...this.characters, ...characters ]);
-          this.setTotalCharacters(totalCharacters);
-        }
-      } catch (error) {
-        console.error('Ошибка при загрузке страниц', error);
-        throw error;
-      }
     }
   }
 });

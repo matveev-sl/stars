@@ -1,6 +1,6 @@
 <template>
     <!-- Компонент списка VListItem от Vuetify -->
-    <v-list-item>
+    <v-list-item v-if="character" :to="{ name: 'CharacterDetail', params: { id: character.id } }">
       <!-- Содержимое элемента списка VListItemContent -->
       <v-list-item-subtitle>ID: {{ character.id }}</v-list-item-subtitle>
         <!-- Заголовок элемента списка VListItemTitle -->
@@ -13,6 +13,9 @@
         <v-btn @click.stop.prevent="onLikeCharacter" >
           {{ liked ? 'Liked' : 'Like' }}
         </v-btn>
+    </v-list-item>
+    <v-list-item v-else>
+      Загружается...
     </v-list-item>
   </template>
 
