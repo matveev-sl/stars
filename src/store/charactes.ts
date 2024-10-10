@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia';
 import { Character, characterMap } from '@/mapping';
-import { API_CHARS_PER_PAGE, API_FIRST_PAGE, BASE_API_URL } from '@/config';
+import { API_CHARS_PER_PAGE, BASE_API_URL } from '@/config';
 
 type State = {
   character: Character | undefined;
   characters : Character[];
   totalCharacters : number;
   likesIds: number[];
+  promisesInProgress: Record<number, boolean>
 }
 
 const TOTAL_CHARS_FALLBACK_VALUE = 100;
@@ -68,7 +69,7 @@ export const useCharactersStore = defineStore('characters', {
 
       await Promise.all(pagesToFetch.map((pageToFetch) => this.fetchAndSetCharacters(pageToFetch, searchQuery)));
     },
-    async fetchAndSetCharacters(page, searchQuery) {
+    async fetchAndSetCharacters(page: number, searchQuery) {
       if (this.promisesInProgress[page]) {
         console.warn('Promise already pending', page);
         return;

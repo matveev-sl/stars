@@ -1,72 +1,92 @@
+import { Api } from '@vitejs/plugin-vue';
+
 const UNKNOWN_VALUE = '-- неизвестно --';
 
 // Описание типа для apiCharacter
 export interface ApiCharacter {
-  name?: string; // Имя может быть неопределенным
-  height: string; // Высота обязательно
-  mass: string | number; // Масса может быть строкой или числом
-  birth_year?: string; // Год рождения может быть неопределенным
+  name?: string;
+  height?: string;
+  mass?: string;
+  birth_year?: string;
   url: string; // URL обязательно
 }
 
 export type Character = {
   name: string;
-  height: string;
-  mass: string | number;
+  height?: number;
+  mass?: number;
   id: number;
-  age: number | string; // Мы подчеркиваем, что в нашем дизайне что-то не так
+  age?: number;
 }
 const isObject = (value: unknown) => {
   return value !== null && typeof value === 'object';
 };
 
-// Функция для преобразования apiCharacter в Character
-export const characterMap = (apiCharacter: unknown): Character => {
-  if (!isObject(apiCharacter)) {
-    throw new Error('apiCharacter is not an object');
+const cleanServerData = (data: unknown): ApiCharacter => {
+  if (!isObject(data)) {
+    throw new Error('Server data not expected and cannot be restored');
+  }
+  let url = '';
+  if ('url' in data) {
+    if (typeof data.url === 'string') {
+      url = data.url;
+    }
+  } else {
+    throw new Error('Server data not expected and cannot be restored');
   }
 
-  if (!('mass' in apiCharacter)) {
-    throw new Error('mass is missing');
+  const apiCharacter: ApiCharacter = { url };
+
+  if ('mass' in data) {
+    if (typeof data.mass === 'string') {
+      apiCharacter.mass = data.mass;
+    }
   }
+  if ('height' in data) {
+    if (typeof data.height === 'string') {
+      apiCharacter.height = data.height;
+    }
+  }
+  if ('name' in data) {
+    if (typeof data.name === 'string') {
+      apiCharacter.name = data.name;
+    }
+  }
+  if ('birth_year' in data) {
+    if (typeof data.birth_year === 'string') {
+      apiCharacter.birth_year = data.birth_year;
+    }
+  }
+  return apiCharacter;
+};
+
+// Функция для преобразования apiCharacter в Character
+export const characterMap = (data: unknown): Character => {
+  const apiCharacter = cleanServerData(data);
   if (typeof apiCharacter.mass !== 'string' && typeof apiCharacter.mass !== 'number') {
     throw new Error('mass is not a string or number');
   }
-  if (!('height' in apiCharacter)) {
-    throw new Error('height is missing');
-  }
-  if (typeof apiCharacter.height !== 'string') {
-    throw new Error('height is not a string');
-  }
-  if ('name' in apiCharacter && typeof apiCharacter.name !== 'string') {
-    throw new Error('name is not a string');
-  }
 
-  if ('birth_year' in apiCharacter && typeof apiCharacter.birth_year !== 'string') {
-    throw new Error('birth_year is not a string');
-  }
+  const height = apiCharacter?.height && !isNaN(parseFloat(apiCharacter.height))
+    ? parseFloat(apiCharacter.height)
+    : undefined;
 
-  if (!('url' in apiCharacter)) {
-    throw new Error('url is missing');
-  }
-  if (typeof apiCharacter.url !== 'string') {
-    throw new Error('url is not a string');
-  }
-
-  const height = isNaN(parseFloat(apiCharacter.height)) ? UNKNOWN_VALUE : apiCharacter.height;
   const currentYear = new Date().getFullYear();
+
+  const birthYear = apiCharacter?.birth_year && !isNaN(parseInt(apiCharacter.birth_year))
+    ? parseInt(apiCharacter.birth_year)
+    : undefined;
 
   return {
     name: apiCharacter.name ?? UNKNOWN_VALUE,
     height: height,
-    mass: isNaN(Number(apiCharacter.mass)) ? UNKNOWN_VALUE : Number(apiCharacter.mass),
+    mass: isNaN(Number(apiCharacter.mass)) ? undefined : Number(apiCharacter.mass),
     id: parseId(apiCharacter.url),
-    age: isNaN(parseInt(apiCharacter.birth_year) + currentYear)
-      ? UNKNOWN_VALUE
-      : parseInt(apiCharacter.birth_year) + currentYear
+    age: birthYear
+      ? birthYear + currentYear
+      : undefined
   };
 };
-
 
 // Функция для извлечения id из URL
 export const parseId = (url: string): number => {
