@@ -3,19 +3,19 @@ const arrYear = year.split('');
 console.log(arrYear);
 
 const times = {
-  M: 1000,
-
-  D: 500,
-
-  C: 100,
-
-  L: 50,
-
-  X: 10,
-
-  V: 5,
-
-  I: 1
+  'M': 1000,
+  'CM': 900,
+  'D': 500,
+  'CD': 400,
+  'C': 100,
+  'XC': 90,
+  'L': 50,
+  'XL': 40,
+  'X': 10,
+  'IX': 9,
+  'V': 5,
+  'IV': 4,
+  'I': 1
 };
 
 function romanToArabic(year) {
@@ -30,6 +30,7 @@ function romanToArabic(year) {
   //     }
   //   }
   //   return total;
+  const arrYear = year.split('');
   let total = 0
   for (let i = 0; i < arrYear.length; i++) {
     const currentValue = times[arrYear[i]];
@@ -44,4 +45,4 @@ function romanToArabic(year) {
   return total;
 }
 
-console.log(romanToArabic('XXI')); // 1994
+console.log(romanToArabic('MCMXCIV')); // 1994
