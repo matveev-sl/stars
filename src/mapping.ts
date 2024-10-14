@@ -4,17 +4,17 @@ const UNKNOWN_VALUE = '-- неизвестно --';
 export interface ApiCharacter {
   name?: string; // Имя может быть неопределенным
   height: string; // Высота обязательно
-  mass: string | number; // Масса может быть строкой или числом
+  mass: string; // Масса может быть строкой или числом
   birth_year?: string; // Год рождения может быть неопределенным
   url: string; // URL обязательно
 }
 
 export type Character = {
   name: string;
-  height: string;
-  mass: string | number;
+  height: number;
+  mass: number;
   id: number;
-  age: number | string; // Мы подчеркиваем, что в нашем дизайне что-то не так
+  age?: number; // Мы подчеркиваем, что в нашем дизайне что-то не так
 }
 const isObject = (value: unknown) => {
   return value !== null && typeof value === 'object';
@@ -32,6 +32,7 @@ export const characterMap = (apiCharacter: unknown): Character => {
   if (typeof apiCharacter.mass !== 'string' && typeof apiCharacter.mass !== 'number') {
     throw new Error('mass is not a string or number');
   }
+  apiCharacter.mass.toLowerCase()
   if (!('height' in apiCharacter)) {
     throw new Error('height is missing');
   }
