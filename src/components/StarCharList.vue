@@ -8,12 +8,13 @@
     <div v-if="error">{{ error }}</div>
     <div v-else-if="isLoading">Загружается...</div>
     <div v-else>
-
-        <CharacterCard
+      <v-list-item
         v-for="(char, index) in currentCharacters"
         :key="index"
-        :character="char" :liked="char ? getIsLiked(char.id) : false" @like="onLike"/>
-
+        :to="{ name: 'CharacterDetail', params: { id: char.id } }"
+      >
+        <CharacterCard :character="char" :liked="getIsLiked(char.id)" @like="onLike"/>
+      </v-list-item>
     </div>
     <v-select
       v-model="charsPerPage"
@@ -64,13 +65,14 @@ export default {
     ...mapState(useCharactersStore, [ 'characters', 'totalCharacters' ])
   },
   watch: {
-    currentPage(newVal) {
-      this.triggerServerFetch(this.currentPage, this.charsPerPage, this.searchQuery);
+    async currentPage(newVal) {
       this.updateUrl();
+      // @ts-ignore
+      await this.checkCharactersPerPageLimit(newVal, this.charsPerPage, this.searchQuery);
     },
-    charsPerPage(newVal) {
-      this.triggerServerFetch(this.currentPage, this.charsPerPage, this.searchQuery);
+    async charsPerPage(newVal) {
       this.updateUrl();
+      await this.checkCharactersPerPageLimit(this.currentPage, newVal, this.searchQuery as string);
     },
     searchQuery() {
       if (this.searchDebounce) {
@@ -82,14 +84,13 @@ export default {
     }
   },
   async mounted() {
-    this.triggerServerFetch(this.currentPage, this.charsPerPage, this.searchQuery, true);
-    // try {
-    //   await this.checkCharactersPerPageLimit(
-    //     this.currentPage, this.charsPerPage, this.searchQuery);
-    // } catch (error) {
-    //   console.error('Error on mounted: ', error);
-    //   this.error = 'Произошла серверная ошибка';
-    // }
+    try {
+      await this.checkCharactersPerPageLimit(
+        this.currentPage, this.charsPerPage, this.searchQuery);
+    } catch (error) {
+      console.error('Error on mounted: ', error);
+      this.error = 'Произошла серверная ошибка';
+    }
   },
   methods: {
     ...mapActions(useCharactersStore, [
@@ -98,7 +99,6 @@ export default {
       'onLike',
       'fetchCharacters',
       'checkCharactersPerPageLimit',
-      'triggerServerFetch',
       'setTotalCharacters'
     ]),
     onCharsPerPageChange() {
@@ -118,11 +118,12 @@ export default {
       });
     },
     async onSearch() {
-      // console.log('onSearch', this.searchQuery);
-      this.$router.push({ name: 'Home', replace: true, query: { search: this.searchQuery } });
-      this.currentPage = API_FIRST_PAGE;
-      this.triggerServerFetch(this.currentPage, this.charsPerPage, this.searchQuery, true);
       this.updateUrl();
+      if (this.searchQuery !== this.$route.query.search) {
+        this.currentPage = API_FIRST_PAGE;}
+      const { characters, totalCharacters } = await this.fetchCharacters(this.currentPage, this.searchQuery);
+      this.setCharacters(characters);
+      this.setTotalCharacters(totalCharacters);
     }
   }
 };

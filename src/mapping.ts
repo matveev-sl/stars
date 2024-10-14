@@ -1,90 +1,49 @@
-import { Api } from '@vitejs/plugin-vue';
-
 const UNKNOWN_VALUE = '-- неизвестно --';
 
 // Описание типа для apiCharacter
 export interface ApiCharacter {
-  name?: string;
-  height?: string;
-  mass?: string;
-  birth_year?: string;
+  name?: string; // Имя может быть неопределенным
+  height: string; // Высота обязательно
+  mass: string | number; // Масса может быть строкой или числом
+  birth_year?: string; // Год рождения может быть неопределенным
   url: string; // URL обязательно
 }
 
 export type Character = {
   name: string;
-  height?: number;
-  mass?: number;
+  height: string;
+  mass: string | number;
   id: number;
-  age?: number;
+  age: number | string; // Мы подчеркиваем, что в нашем дизайне что-то не так
 }
-const isObject = (value: unknown) => {
-  return value !== null && typeof value === 'object';
-};
-
-const cleanServerData = (data: unknown): ApiCharacter => {
-  if (!isObject(data)) {
-    throw new Error('Server data not expected and cannot be restored');
-  }
-  let url = '';
-  if ('url' in data) {
-    if (typeof data.url === 'string') {
-      url = data.url;
-    }
-  } else {
-    throw new Error('Server data not expected and cannot be restored');
-  }
-
-  const apiCharacter: ApiCharacter = { url };
-
-  if ('mass' in data) {
-    if (typeof data.mass === 'string') {
-      apiCharacter.mass = data.mass;
-    }
-  }
-  if ('height' in data) {
-    if (typeof data.height === 'string') {
-      apiCharacter.height = data.height;
-    }
-  }
-  if ('name' in data) {
-    if (typeof data.name === 'string') {
-      apiCharacter.name = data.name;
-    }
-  }
-  if ('birth_year' in data) {
-    if (typeof data.birth_year === 'string') {
-      apiCharacter.birth_year = data.birth_year;
-    }
-  }
-  return apiCharacter;
-};
 
 // Функция для преобразования apiCharacter в Character
-export const characterMap = (data: unknown): Character => {
-  const apiCharacter = cleanServerData(data);
-  if (typeof apiCharacter.mass !== 'string' && typeof apiCharacter.mass !== 'number') {
-    throw new Error('mass is not a string or number');
-  }
+export const characterMap = (apiCharacter: ApiCharacter): Character => {
+  // todo: implement proper guards
+  // if (!apiCharacter) {
+  //   throw new Error('apiCharacter is missing');
+  // }
+  // if (typeof apiCharacter !== 'object') {
+  //   throw new Error('not an object');
+  // }
+  // if (!('height' in apiCharacter)) {
+  //   throw new Error('height is missing');
+  // }
+  // if (typeof apiCharacter.height !== 'string') {
+  //   throw new Error('height is not a string');
+  // }
 
-  const height = apiCharacter?.height && !isNaN(parseFloat(apiCharacter.height))
-    ? parseFloat(apiCharacter.height)
-    : undefined;
-
+  const height = isNaN(parseFloat(apiCharacter.height)) ? UNKNOWN_VALUE : apiCharacter.height;
   const currentYear = new Date().getFullYear();
-
-  const birthYear = apiCharacter?.birth_year && !isNaN(parseInt(apiCharacter.birth_year))
-    ? parseInt(apiCharacter.birth_year)
-    : undefined;
-
   return {
     name: apiCharacter.name ?? UNKNOWN_VALUE,
     height: height,
-    mass: isNaN(Number(apiCharacter.mass)) ? undefined : Number(apiCharacter.mass),
+    mass: isNaN(Number(apiCharacter.mass)) ? UNKNOWN_VALUE : Number(apiCharacter.mass),
+    // isLiked: false,
     id: parseId(apiCharacter.url),
-    age: birthYear
-      ? birthYear + currentYear
-      : undefined
+    age: isNaN(parseInt(apiCharacter.birth_year) + currentYear)
+      ? UNKNOWN_VALUE
+      : parseInt(apiCharacter.birth_year) + currentYear
   };
 };
 
