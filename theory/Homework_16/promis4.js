@@ -1,39 +1,31 @@
 function randomStringWithChance(successRate = 0.7) {
     return new Promise((resolve, reject) => {
-      const delay = Math.floor(Math.random() * (1500 - 500 + 1)) + 500;
       setTimeout(() => {
-        Math.random() < successRate ? resolve(Math.random().toString(36).substring(2, 8)) : reject("Ошибка");
-      }, delay);
+        Math.random() < successRate ? resolve(Math.random().toString(36).substring(2, 8)) : reject('Ошибка');
+      }, 1000);
     });
   }
   
-  async function getUser() {
-    let firstName, lastName;
-  
-    const firstNamePromises = Array.from({ length: 5 }, () => randomStringWithChance());
-    const lastNamePromises = Array.from({ length: 5 }, () => randomStringWithChance());
-  
-    const firstNameResults = Promise.race(firstNamePromises);
-    const lastNameResults = Promise.race(lastNamePromises);
-  
+  const getRandomStringWithRetries = async (maxRetriesCount = 20, chance = 0.5) => {
+    const promises = Array.from({ length: maxRetriesCount}, () => randomStringWithChance(chance));
     try {
-      firstName = await firstNameResults;
-    } catch (error) {
-      console.error("Ошибка при получении имени:", error);
-    }
+        return await Promise.any(promises); 
+      } catch (error) {
+        throw new Error('Не удалось получить строку');
+      }
+  };
   
+  const getUser3 = async () => {
     try {
-      lastName = await lastNameResults;
-    } catch (error) {
-      console.error("Ошибка при получении фамилии:", error);
-    }
-  
-    if (!firstName || !lastName) {
-      throw new Error("Не удалось получить валидные имя или фамилию.");
-    }
-  
-    return { firstName, lastName };
+    const firstNamePromise = getRandomStringWithRetries(5, 0.1);
+    const lastNamePromise = getRandomStringWithRetries(5, 0.1);
+    const [firstName, lastName] = await Promise.all([firstNamePromise, lastNamePromise]);
+    return `${lastName} ${firstName}`; 
+  } catch (error) {
+    console.error('Ошибка при получении имени пользователя:', error.message);
+    return 'Не удалось получить имя пользователя';
   }
-  
-  getUser().then(user => console.log("Пользователь:", user)).catch(error => console.error("Ошибка:", error));
-  
+};
+  console.log(new Date());
+  console.log(await getUser3());
+  console.log(new Date());
